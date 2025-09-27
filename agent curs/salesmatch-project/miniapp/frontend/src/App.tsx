@@ -9,6 +9,7 @@ import { ProfilePage } from './pages/ProfilePage';
 import { MatchingPage } from './pages/MatchingPage';
 import { MatchesPage } from './pages/MatchesPage';
 import { MessagesPage } from './pages/MessagesPage';
+import { DemoPage } from './pages/DemoPage';
 import './App.css';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -74,6 +75,14 @@ const AppContent: React.FC = () => {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/demo"
+          element={
+            <ProtectedRoute>
+              <DemoPage />
             </ProtectedRoute>
           }
         />

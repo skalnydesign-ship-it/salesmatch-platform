@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { useContext7 } from '../../contexts/Context7Provider';
+import { useContext7 } from '../contexts/Context7Provider';
 import { useTelegram } from '../../hooks/useTelegram';
 import './AuthPage.css';
 
@@ -56,6 +56,9 @@ export const AuthPage: React.FC = () => {
         return;
       }
 
+      // Show loading state
+      showAlert('Authenticating with Telegram...');
+
       // Security check with Context7
       if (context7Connected) {
         const loginCode = `
@@ -80,13 +83,15 @@ export const AuthPage: React.FC = () => {
         }
       }
 
+      // Simulate authentication delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
       // In a real app, this would call the actual login function
-      // For now, we'll simulate a successful login
-      showAlert('Welcome to SalesMatch Pro!');
+      showAlert('🎉 Welcome to SalesMatch Pro!');
       navigate('/profile');
     } catch (error) {
       console.error('Login error:', error);
-      showAlert('Login failed. Please try again.');
+      showAlert('❌ Login failed. Please try again.');
     }
   };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useContext7 } from '../../contexts/Context7Provider';
+import { useContext7 } from '../contexts/Context7Provider';
 import { useTelegram } from '../../hooks/useTelegram';
 import { Header } from '../Layout/Header';
 import { apiService } from '../../services/api';

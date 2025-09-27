@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useContext7 } from '../../contexts/Context7Provider';
+import { useContext7 } from '../contexts/Context7Provider';
 import { useTelegram } from '../../hooks/useTelegram';
 import { Header } from '../Layout/Header';
 import { apiService } from '../../services/api';
