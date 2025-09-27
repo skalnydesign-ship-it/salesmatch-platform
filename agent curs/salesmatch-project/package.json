@@ -14,7 +14,9 @@
     "dev:frontend": "cd miniapp/frontend && npm run dev",
     "install:frontend": "cd miniapp/frontend && npm install",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev:frontend\"",
-    "build:all": "npm run build:frontend"
+    "build:all": "npm run build:frontend",
+    "context7": "npx -y @upstash/context7-mcp@latest",
+    "dev:with-context7": "concurrently \"npm run context7\" \"npm run dev:all\""
   },
   "dependencies": {
     "axios": "^1.6.2",
@@ -36,6 +38,7 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
+    "@upstash/context7-mcp": "^1.0.18",
     "concurrently": "^8.2.2",
     "eslint": "^8.55.0",
     "jest": "^29.7.0",

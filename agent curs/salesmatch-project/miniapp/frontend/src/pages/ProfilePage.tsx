@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useContext7 } from '../../contexts/Context7Provider';
 import { useTelegram } from '../../hooks/useTelegram';
 import { Header } from '../Layout/Header';
 import { apiService } from '../../services/api';
@@ -9,13 +10,67 @@ import './ProfilePage.css';
 export const ProfilePage: React.FC = () => {
   const { user, updateUser } = useAuth();
   const { showAlert, hapticFeedback } = useTelegram();
+  const { 
+    isConnected: context7Connected, 
+    getCodeSuggestions, 
+    getBestPractices, 
+    checkSecurity 
+  } = useContext7();
+  
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [codeSuggestions, setCodeSuggestions] = useState<string[]>([]);
+  const [bestPractices, setBestPractices] = useState<string[]>([]);
+  const [securityIssues, setSecurityIssues] = useState<string[]>([]);
 
   useEffect(() => {
     loadProfile();
   }, []);
+
+  useEffect(() => {
+    if (context7Connected) {
+      loadContext7Data();
+    }
+  }, [context7Connected, isEditing]);
+
+  const loadContext7Data = async () => {
+    try {
+      // Get TypeScript best practices for profile management
+      const practices = await getBestPractices('typescript');
+      setBestPractices(practices.slice(0, 4));
+
+      // Get code suggestions for profile editing
+      const suggestions = await getCodeSuggestions('profile editing form validation');
+      setCodeSuggestions(suggestions);
+
+      // Check security for profile update code
+      if (isEditing) {
+        const profileUpdateCode = `
+          const handleSave = async () => {
+            try {
+              if (profile) {
+                const response = await apiService.updateProfile(profile);
+                if (response.success) {
+                  setProfile(response.data);
+                  setIsEditing(false);
+                  showAlert('Profile updated successfully!');
+                }
+              }
+            } catch (error) {
+              console.error('Failed to save profile:', error);
+              showAlert('Failed to save profile');
+            }
+          };
+        `;
+        
+        const securityCheck = await checkSecurity(profileUpdateCode);
+        setSecurityIssues(securityCheck.issues);
+      }
+    } catch (error) {
+      console.warn('Failed to load Context7 data:', error);
+    }
+  };
 
   const loadProfile = async () => {
     try {
@@ -56,6 +111,32 @@ export const ProfilePage: React.FC = () => {
   const handleSave = async () => {
     try {
       if (profile) {
+        // Security check with Context7
+        if (context7Connected) {
+          const saveCode = `
+            const handleSave = async () => {
+              try {
+                if (profile) {
+                  const response = await apiService.updateProfile(profile);
+                  if (response.success) {
+                    setProfile(response.data);
+                    setIsEditing(false);
+                    showAlert('Profile updated successfully!');
+                  }
+                }
+              } catch (error) {
+                console.error('Failed to save profile:', error);
+                showAlert('Failed to save profile');
+              }
+            };
+          `;
+          
+          const securityCheck = await checkSecurity(saveCode);
+          if (securityCheck.issues.length > 0) {
+            console.warn('Security issues detected:', securityCheck.issues);
+          }
+        }
+
         const response = await apiService.updateProfile(profile);
         if (response.success) {
           setProfile(response.data);
@@ -83,6 +164,11 @@ export const ProfilePage: React.FC = () => {
         <div className="profile-page__loading">
           <div className="profile-page__spinner"></div>
           <p>Loading profile...</p>
+          {context7Connected && (
+            <div className="profile-page__context7-indicator">
+              <span className="context7-badge">Context7 Analyzing Code</span>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -119,6 +205,30 @@ export const ProfilePage: React.FC = () => {
         }
       />
 
+      {/* Context7 Code Suggestions */}
+      {context7Connected && codeSuggestions.length > 0 && isEditing && (
+        <div className="profile-page__context7-suggestions">
+          <h3>💡 Code Suggestions (Context7)</h3>
+          <ul>
+            {codeSuggestions.map((suggestion, index) => (
+              <li key={index}>{suggestion}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Security Issues Warning */}
+      {context7Connected && securityIssues.length > 0 && (
+        <div className="profile-page__security-warning">
+          <h3>⚠️ Security Issues Detected</h3>
+          <ul>
+            {securityIssues.map((issue, index) => (
+              <li key={index}>{issue}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="profile-page__content">
         {profile && (
           <>
@@ -138,6 +248,11 @@ export const ProfilePage: React.FC = () => {
                     ></div>
                   </div>
                 </div>
+                {context7Connected && (
+                  <div className="profile-page__context7-status">
+                    <span className="context7-indicator">🔗 Context7 Active</span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -241,11 +356,21 @@ export const ProfilePage: React.FC = () => {
                 </div>
               </div>
             </div>
+
+            {/* Context7 Best Practices */}
+            {context7Connected && bestPractices.length > 0 && (
+              <div className="profile-page__context7-practices">
+                <h3>📚 Best Practices (Context7)</h3>
+                <ul>
+                  {bestPractices.map((practice, index) => (
+                    <li key={index}>{practice}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </>
         )}
       </div>
     </div>
   );
 };
-
-

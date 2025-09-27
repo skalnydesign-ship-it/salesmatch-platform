@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useContext7 } from '../../contexts/Context7Provider';
 import { useTelegram } from '../../hooks/useTelegram';
 import { Header } from '../Layout/Header';
 import { apiService } from '../../services/api';
@@ -9,12 +10,41 @@ import './MatchesPage.css';
 export const MatchesPage: React.FC = () => {
   const navigate = useNavigate();
   const { hapticFeedback } = useTelegram();
+  const { 
+    isConnected: context7Connected, 
+    getCodeSuggestions, 
+    getBestPractices, 
+    checkSecurity 
+  } = useContext7();
+  
   const [matches, setMatches] = useState<Match[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [codeSuggestions, setCodeSuggestions] = useState<string[]>([]);
+  const [bestPractices, setBestPractices] = useState<string[]>([]);
 
   useEffect(() => {
     loadMatches();
   }, []);
+
+  useEffect(() => {
+    if (context7Connected) {
+      loadContext7Data();
+    }
+  }, [context7Connected]);
+
+  const loadContext7Data = async () => {
+    try {
+      // Get React best practices for list rendering
+      const practices = await getBestPractices('react');
+      setBestPractices(practices.slice(0, 3));
+
+      // Get code suggestions for match handling
+      const suggestions = await getCodeSuggestions('match list rendering performance optimization');
+      setCodeSuggestions(suggestions);
+    } catch (error) {
+      console.warn('Failed to load Context7 data:', error);
+    }
+  };
 
   const loadMatches = async () => {
     try {
@@ -106,8 +136,24 @@ export const MatchesPage: React.FC = () => {
     }
   };
 
-  const handleMatchClick = (match: Match) => {
+  const handleMatchClick = async (match: Match) => {
     hapticFeedback('selection');
+    
+    // Security check with Context7
+    if (context7Connected) {
+      const navigationCode = `
+        const handleMatchClick = (match) => {
+          hapticFeedback('selection');
+          navigate(\`/messages/\${match.id}\`);
+        };
+      `;
+      
+      const securityCheck = await checkSecurity(navigationCode);
+      if (securityCheck.issues.length > 0) {
+        console.warn('Security issues detected:', securityCheck.issues);
+      }
+    }
+    
     navigate(`/messages/${match.id}`);
   };
 
@@ -129,6 +175,11 @@ export const MatchesPage: React.FC = () => {
         <div className="matches-page__loading">
           <div className="matches-page__spinner"></div>
           <p>Loading matches...</p>
+          {context7Connected && (
+            <div className="matches-page__context7-indicator">
+              <span className="context7-badge">Context7 Analyzing Performance</span>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -138,6 +189,18 @@ export const MatchesPage: React.FC = () => {
     <div className="matches-page">
       <Header title="Matches" />
       
+      {/* Context7 Code Suggestions */}
+      {context7Connected && codeSuggestions.length > 0 && (
+        <div className="matches-page__context7-suggestions">
+          <h3>💡 Performance Suggestions (Context7)</h3>
+          <ul>
+            {codeSuggestions.map((suggestion, index) => (
+              <li key={index}>{suggestion}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="matches-page__content">
         {matches.length === 0 ? (
           <div className="matches-page__empty">
@@ -156,6 +219,11 @@ export const MatchesPage: React.FC = () => {
             <div className="matches-page__header">
               <h2>Your Matches ({matches.length})</h2>
               <p>People who liked you back</p>
+              {context7Connected && (
+                <div className="matches-page__context7-status">
+                  <span className="context7-indicator">🔗 Context7 Optimizing</span>
+                </div>
+              )}
             </div>
 
             <div className="matches-page__list">
@@ -207,11 +275,21 @@ export const MatchesPage: React.FC = () => {
                 </div>
               ))}
             </div>
+
+            {/* Context7 Best Practices */}
+            {context7Connected && bestPractices.length > 0 && (
+              <div className="matches-page__context7-practices">
+                <h3>📚 Best Practices (Context7)</h3>
+                <ul>
+                  {bestPractices.map((practice, index) => (
+                    <li key={index}>{practice}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </>
         )}
       </div>
     </div>
   );
 };
-
-

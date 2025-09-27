@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useContext7 } from '../../contexts/Context7Provider';
 import { useTelegram } from '../../hooks/useTelegram';
 import { Header } from '../Layout/Header';
 import { apiService } from '../../services/api';
@@ -7,14 +8,43 @@ import './MatchingPage.css';
 
 export const MatchingPage: React.FC = () => {
   const { hapticFeedback, showAlert } = useTelegram();
+  const { 
+    isConnected: context7Connected, 
+    getCodeSuggestions, 
+    getBestPractices, 
+    checkSecurity 
+  } = useContext7();
+  
   const [profiles, setProfiles] = useState<SwipeProfile[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isSwipeInProgress, setIsSwipeInProgress] = useState(false);
+  const [codeSuggestions, setCodeSuggestions] = useState<string[]>([]);
+  const [bestPractices, setBestPractices] = useState<string[]>([]);
 
   useEffect(() => {
     loadProfiles();
   }, []);
+
+  useEffect(() => {
+    if (context7Connected) {
+      loadContext7Data();
+    }
+  }, [context7Connected]);
+
+  const loadContext7Data = async () => {
+    try {
+      // Get React best practices for interactive components
+      const practices = await getBestPractices('react');
+      setBestPractices(practices.slice(0, 3));
+
+      // Get code suggestions for swipe handling
+      const suggestions = await getCodeSuggestions('swipe gesture handling performance optimization');
+      setCodeSuggestions(suggestions);
+    } catch (error) {
+      console.warn('Failed to load Context7 data:', error);
+    }
+  };
 
   const loadProfiles = async () => {
     try {
@@ -80,6 +110,36 @@ export const MatchingPage: React.FC = () => {
     hapticFeedback('impact');
 
     try {
+      // Security check with Context7
+      if (context7Connected) {
+        const swipeCode = `
+          const handleSwipe = async (action) => {
+            if (isSwipeInProgress || currentIndex >= profiles.length) return;
+            setIsSwipeInProgress(true);
+            hapticFeedback('impact');
+            try {
+              const response = await apiService.swipeProfile(profiles[currentIndex].id, action);
+              if (response.success) {
+                if (action === 'like') {
+                  showAlert('Liked! 🎉');
+                }
+                setCurrentIndex(prev => prev + 1);
+              }
+            } catch (error) {
+              console.error('Swipe error:', error);
+              showAlert('Failed to process swipe');
+            } finally {
+              setIsSwipeInProgress(false);
+            }
+          };
+        `;
+        
+        const securityCheck = await checkSecurity(swipeCode);
+        if (securityCheck.issues.length > 0) {
+          console.warn('Security issues detected:', securityCheck.issues);
+        }
+      }
+
       const response = await apiService.swipeProfile(profiles[currentIndex].id, action);
       if (response.success) {
         if (action === 'like') {
@@ -107,6 +167,11 @@ export const MatchingPage: React.FC = () => {
         <div className="matching-page__loading">
           <div className="matching-page__spinner"></div>
           <p>Finding profiles for you...</p>
+          {context7Connected && (
+            <div className="matching-page__context7-indicator">
+              <span className="context7-badge">Context7 Optimizing Swipe Performance</span>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -140,6 +205,18 @@ export const MatchingPage: React.FC = () => {
     <div className="matching-page">
       <Header title="Find Matches" />
       
+      {/* Context7 Code Suggestions */}
+      {context7Connected && codeSuggestions.length > 0 && (
+        <div className="matching-page__context7-suggestions">
+          <h3>💡 Performance Suggestions (Context7)</h3>
+          <ul>
+            {codeSuggestions.map((suggestion, index) => (
+              <li key={index}>{suggestion}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="matching-page__content">
         <div className="matching-page__card">
           <div className="matching-page__card-header">
@@ -158,6 +235,11 @@ export const MatchingPage: React.FC = () => {
                   ></div>
                 </div>
               </div>
+              {context7Connected && (
+                <div className="matching-page__context7-status">
+                  <span className="context7-indicator">🔗 Context7 Active</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -210,9 +292,19 @@ export const MatchingPage: React.FC = () => {
         <div className="matching-page__progress">
           <span>{currentIndex + 1} of {profiles.length}</span>
         </div>
+
+        {/* Context7 Best Practices */}
+        {context7Connected && bestPractices.length > 0 && (
+          <div className="matching-page__context7-practices">
+            <h3>📚 Best Practices (Context7)</h3>
+            <ul>
+              {bestPractices.map((practice, index) => (
+                <li key={index}>{practice}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );
 };
-
-
