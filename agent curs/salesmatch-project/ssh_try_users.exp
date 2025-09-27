@@ -1,0 +1,50 @@
+#!/usr/bin/expect -f
+
+set timeout 10
+set host "89.111.131.166"
+set password "4@dU8HRJ542uumZB"
+
+set users {ubuntu debian centos admin user}
+
+foreach user $users {
+    puts "Trying user: $user"
+    
+    spawn ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 $user@$host
+    
+    expect {
+        "password:" {
+            send "$password\r"
+            expect {
+                "$ " {
+                    puts "SUCCESS: Connected as $user"
+                    send "whoami\r"
+                    send "exit\r"
+                    expect eof
+                    exit 0
+                }
+                "# " {
+                    puts "SUCCESS: Connected as $user (root)"
+                    send "whoami\r"
+                    send "exit\r"
+                    expect eof
+                    exit 0
+                }
+                "Permission denied" {
+                    puts "Failed: $user"
+                }
+            }
+        }
+        "Connection refused" {
+            puts "Connection refused for $user"
+        }
+        timeout {
+            puts "Timeout for $user"
+        }
+        eof {
+            puts "Connection failed for $user"
+        }
+    }
+    
+    expect eof
+    wait
+}

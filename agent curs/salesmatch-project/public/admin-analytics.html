@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 SalesMatch Pro Analytics Dashboard</title>
+    <link rel="stylesheet" href="/css/styles-new.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Дополнительные стили для админ-дашборда */
+        .admin-header {
+            background: var(--glass-background);
+            backdrop-filter: var(--glass-backdrop);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-medium);
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .admin-header::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--gold), var(--primary-blue-light), var(--gold));
+            border-radius: var(--border-radius-medium);
+            opacity: 0.7;
+            z-index: -1;
+        }
+        
+        .admin-title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .admin-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+        
+        .refresh-section {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .metric-highlight {
+            position: relative;
+        }
+        
+        .metric-highlight .metric-value {
+            animation: pulseNumber 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulseNumber {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-healthy { background: #10b981; }
+        .status-warning { background: #f59e0b; }
+        .status-error { background: #ef4444; }
+        
+        .endpoints-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .endpoint-card {
+            background: var(--glass-background);
+            backdrop-filter: var(--glass-backdrop);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-small);
+            padding: 15px;
+            transition: all var(--transition-smooth);
+        }
+        
+        .endpoint-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.2);
+        }
+        
+        .endpoint-method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .method-get { background: #10b981; color: white; }
+        .method-post { background: #3b82f6; color: white; }
+        
+        .footer-info {
+            margin-top: 40px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(30, 58, 138, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .loading-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 215, 0, 0.3);
+            border-left: 4px solid var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .admin-title { font-size: 2rem; }
+            .admin-subtitle { font-size: 1.1rem; }
+            .refresh-section { flex-direction: column; }
+            .endpoints-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div style="text-align: center;">
+            <div class="loading-spinner"></div>
+            <p style="margin-top: 20px; color: white;">Загрузка данных...</p>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <!-- Header Section -->
+        <div class="admin-header">
+            <div class="admin-title">📊 Analytics Dashboard</div>
+            <div class="admin-subtitle">SalesMatch Pro - Система аналитики в реальном времени</div>
+            
+            <div class="refresh-section">
+                <button class="btn btn-gold" onclick="refreshMetrics()">
+                    <i class="fas fa-sync-alt"></i>
+                    Обновить данные
+                </button>
+                <button class="btn btn-glass" onclick="toggleAutoRefresh()">
+                    <i class="fas fa-clock" id="autoRefreshIcon"></i>
+                    <span id="autoRefreshText">Включить авто-обновление</span>
+                </button>
+                <button class="btn btn-blue" onclick="downloadReport()">
+                    <i class="fas fa-download"></i>
+                    Скачать отчет
+                </button>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <span class="status-indicator status-healthy" id="statusIndicator"></span>
+                <span id="statusText">Система работает нормально</span>
+                <span style="margin-left: 20px; color: rgba(255,255,255,0.6);" id="lastUpdate">
+                    Последнее обновление: --:--
+                </span>
+            </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="metrics-grid" id="metricsGrid">
+            <!-- Metrics will be loaded here -->
+        </div>
+
+        <!-- API Endpoints Section -->
+        <div class="glass-card">
+            <h3>🔗 API Endpoints</h3>
+            <p style="color: rgba(255,255,255,0.8); margin-bottom: 20px;">
+                Доступные endpoints для интеграции с внешними системами
+            </p>
+            
+            <div class="endpoints-grid">
+                <div class="endpoint-card">
+                    <div>
+                        <span class="endpoint-method method-get">GET</span>
+                        <code>/api/v1/analytics/admin/metrics</code>
+                    </div>
+                    <p style="margin: 10px 0 0 0; font-size: 0.9rem; color: rgba(255,255,255,0.7);">
+                        Основные метрики платформы
+                    </p>
+                </div>
+                
+                <div class="endpoint-card">
+                    <div>
+                        <span class="endpoint-method method-get">GET</span>
+                        <code>/api/v1/analytics/admin/weekly-report</code>
+                    </div>
+                    <p style="margin: 10px 0 0 0; font-size: 0.9rem; color: rgba(255,255,255,0.7);">
+                        Недельный отчет для Telegram
+                    </p>
+                </div>
+                
+                <div class="endpoint-card">
+                    <div>
+                        <span class="endpoint-method method-get">GET</span>
+                        <code>/api/v1/analytics/admin/health</code>
+                    </div>
+                    <p style="margin: 10px 0 0 0; font-size: 0.9rem; color: rgba(255,255,255,0.7);">
+                        Проверка здоровья системы
+                    </p>
+                </div>
+                
+                <div class="endpoint-card">
+                    <div>
+                        <span class="endpoint-method method-post">POST</span>
+                        <code>/api/v1/analytics/track</code>
+                    </div>
+                    <p style="margin: 10px 0 0 0; font-size: 0.9rem; color: rgba(255,255,255,0.7);">
+                        Отправка событий аналитики
+                    </p>
+                </div>
+                
+                <div class="endpoint-card">
+                    <div>
+                        <span class="endpoint-method method-get">GET</span>
+                        <code>/api/v1/analytics/user/stats/:userId</code>
+                    </div>
+                    <p style="margin: 10px 0 0 0; font-size: 0.9rem; color: rgba(255,255,255,0.7);">
+                        Статистика пользователя (Premium)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-info">
+            <p>
+                <i class="fas fa-chart-line" style="color: var(--gold);"></i>
+                SalesMatch Pro Analytics System
+                <span style="margin: 0 10px;">•</span>
+                Built with ❤️ by Deep Fon Corporation
+            </p>
+            <p style="margin-top: 10px;">
+                Система автоматически обновляется каждые 60 секунд
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // === ПЕРЕМЕННЫЕ И СОСТОЯНИЕ ===
+        let autoRefreshEnabled = false;
+        let autoRefreshInterval = null;
+        let isLoading = false;
+
+        // === ИНИЦИАЛИЗАЦИЯ ===
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshMetrics();
+            
+            // Автообновление каждую минуту по умолчанию
+            setTimeout(() => {
+                toggleAutoRefresh();
+            }, 2000);
+        });
+
+        // === ОСНОВНЫЕ ФУНКЦИИ ===
+        async function refreshMetrics() {
+            if (isLoading) return;
+            
+            isLoading = true;
+            showLoading(true);
+            
+            try {
+                const response = await fetch('/api/v1/analytics/admin/metrics?admin=true');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    displayMetrics(data.data);
+                    updateStatus('healthy', 'Система работает нормально');
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+            } catch (error) {
+                console.error('Ошибка загрузки метрик:', error);
+                displayError('Ошибка загрузки данных: ' + error.message);
+                updateStatus('error', 'Ошибка подключения к серверу');
+            } finally {
+                isLoading = false;
+                showLoading(false);
+                updateLastRefreshTime();
+            }
+        }
+
+        function displayMetrics(metrics) {
+            const metricsGrid = document.getElementById('metricsGrid');
+            
+            metricsGrid.innerHTML = `
+                <div class="metric-card metric-highlight">
+                    <div class="metric-value">${metrics.new_users_today}</div>
+                    <div class="metric-label">👥 Новых пользователей сегодня</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value">${metrics.active_users_today}</div>
+                    <div class="metric-label">🔥 Активных пользователей сегодня</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value">${metrics.matches_today}</div>
+                    <div class="metric-label">💕 Матчей сегодня</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value">${metrics.paid_users_total}</div>
+                    <div class="metric-label">💎 Платных подписок</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value">${metrics.messages_today}</div>
+                    <div class="metric-label">💬 Сообщений сегодня</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value">${metrics.total_users}</div>
+                    <div class="metric-label">👨‍👩‍👧‍👦 Всего пользователей</div>
+                </div>
+            `;
+            
+            // Анимация появления карточек
+            const cards = metricsGrid.querySelectorAll('.metric-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        }
+
+        function displayError(message) {
+            const metricsGrid = document.getElementById('metricsGrid');
+            metricsGrid.innerHTML = `
+                <div class="metric-card" style="grid-column: 1 / -1; text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">⚠️</div>
+                    <div class="metric-label" style="color: #ef4444;">${message}</div>
+                    <button class="btn btn-gold mt-20" onclick="refreshMetrics()">
+                        <i class="fas fa-retry"></i>
+                        Попробовать снова
+                    </button>
+                </div>
+            `;
+        }
+
+        function toggleAutoRefresh() {
+            const icon = document.getElementById('autoRefreshIcon');
+            const text = document.getElementById('autoRefreshText');
+            
+            if (autoRefreshEnabled) {
+                // Выключаем
+                clearInterval(autoRefreshInterval);
+                autoRefreshEnabled = false;
+                icon.className = 'fas fa-clock';
+                text.textContent = 'Включить авто-обновление';
+            } else {
+                // Включаем
+                autoRefreshInterval = setInterval(refreshMetrics, 60000); // каждую минуту
+                autoRefreshEnabled = true;
+                icon.className = 'fas fa-clock pulse-glow';
+                text.textContent = 'Выключить авто-обновление';
+            }
+        }
+
+        async function downloadReport() {
+            try {
+                showLoading(true);
+                const response = await fetch('/api/v1/analytics/admin/weekly-report?admin=true');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Создаем и скачиваем файл
+                    const reportContent = `
+SalesMatch Pro - Недельный отчет
+Дата: ${new Date().toLocaleDateString('ru-RU')}
+
+Новых пользователей: ${data.data.new_users}
+Активных пользователей: ${data.data.active_users}
+Матчей: ${data.data.total_matches}
+Сообщений: ${data.data.total_messages}
+Новых подписок: ${data.data.new_subscriptions}
+
+Сгенерировано: ${new Date().toLocaleString('ru-RU')}
+                    `;
+                    
+                    const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `salesmatch-report-${new Date().toISOString().split('T')[0]}.txt`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                    
+                    showNotification('Отчет скачан успешно!', 'success');
+                } else {
+                    throw new Error('Ошибка получения отчета');
+                }
+            } catch (error) {
+                showNotification('Ошибка скачивания отчета', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // === УТИЛИТЫ ===
+        function showLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (show) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+
+        function updateStatus(status, text) {
+            const indicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            
+            indicator.className = `status-indicator status-${status}`;
+            statusText.textContent = text;
+        }
+
+        function updateLastRefreshTime() {
+            const lastUpdate = document.getElementById('lastUpdate');
+            lastUpdate.textContent = `Последнее обновление: ${new Date().toLocaleTimeString('ru-RU')}`;
+        }
+
+        function showNotification(message, type) {
+            // Создаем уведомление
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 30px;
+                right: 30px;
+                background: ${type === 'success' ? 'var(--glass-background)' : 'rgba(239, 68, 68, 0.9)'};
+                backdrop-filter: var(--glass-backdrop);
+                border: 1px solid ${type === 'success' ? 'var(--glass-border)' : 'rgba(239, 68, 68, 0.3)'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: var(--border-radius-small);
+                box-shadow: var(--shadow-neumorphic);
+                z-index: 10000;
+                transform: translateX(400px);
+                transition: all 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Обработчики клавиатуры
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
+                e.preventDefault();
+                refreshMetrics();
+            }
+        });
+    </script>
+</body>
+</html>

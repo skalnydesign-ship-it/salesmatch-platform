@@ -1,0 +1,36 @@
+#!/usr/bin/expect -f
+
+set timeout 30
+set host "89.111.131.166"
+set user "root"
+set password "4@dU8HRJ542uumZB"
+
+spawn ssh -o StrictHostKeyChecking=no $user@$host
+
+expect {
+    "password:" {
+        send "$password\r"
+        expect {
+            "$ " {
+                send "echo 'SSH Root Connection successful!'\r"
+                send "whoami\r"
+                send "exit\r"
+            }
+            "# " {
+                send "echo 'SSH Root Connection successful!'\r"
+                send "whoami\r"
+                send "exit\r"
+            }
+        }
+    }
+    timeout {
+        puts "Connection timeout"
+        exit 1
+    }
+    eof {
+        puts "Connection failed"
+        exit 1
+    }
+}
+
+expect eof

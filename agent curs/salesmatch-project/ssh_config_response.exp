@@ -1,0 +1,30 @@
+#!/usr/bin/expect -f
+
+set timeout 30
+
+spawn ssh -i /Users/skalniybrat/agent1/id_rsa -o StrictHostKeyChecking=no root@89.111.131.166
+
+expect {
+    "Что нужно сделать с изменённым файлом настройки sshd_config?" {
+        send "2\r"
+        expect "#"
+        send "echo 'SSH config update completed'\r"
+        send "exit\r"
+    }
+    "What do you want to do about modified configuration file sshd_config?" {
+        send "2\r"
+        expect "#"
+        send "echo 'SSH config update completed'\r"
+        send "exit\r"
+    }
+    "#" {
+        send "echo 'Already at prompt'\r"
+        send "exit\r"
+    }
+    timeout {
+        puts "Connection timeout"
+        exit 1
+    }
+}
+
+expect eof
