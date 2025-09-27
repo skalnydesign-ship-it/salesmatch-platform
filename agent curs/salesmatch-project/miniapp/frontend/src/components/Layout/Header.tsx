@@ -13,7 +13,7 @@ export const Header: React.FC<HeaderProps> = ({
   title, 
   showBack = false, 
   onBack,
-  rightButton 
+  rightButton
 }) => {
   const { webApp, hapticFeedback } = useTelegram();
 
@@ -25,6 +25,8 @@ export const Header: React.FC<HeaderProps> = ({
       webApp.BackButton.onClick();
     }
   };
+
+  // title is not clickable in the reverted version
 
   React.useEffect(() => {
     if (webApp) {
@@ -55,7 +57,11 @@ export const Header: React.FC<HeaderProps> = ({
             ←
           </button>
         )}
-        <h1 className="header__title">{title}</h1>
+        <h1 
+          className="header__title"
+        >
+          {title}
+        </h1>
         {rightButton && (
           <div className="header__right">
             {rightButton}

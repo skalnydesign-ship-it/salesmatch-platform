@@ -14,7 +14,6 @@ const navItems: NavItem[] = [
   { id: 'matching', label: 'Поиск', icon: '🔍', path: '/matching' },
   { id: 'matches', label: 'Матчи', icon: '💕', path: '/matches' },
   { id: 'messages', label: 'Чаты', icon: '💬', path: '/messages' },
-  { id: 'demo', label: 'Демо', icon: '🧪', path: '/demo' },
   { id: 'profile', label: 'Профиль', icon: '👤', path: '/profile' },
 ];
 

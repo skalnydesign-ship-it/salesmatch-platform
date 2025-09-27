@@ -1,134 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useContext7 } from '../contexts/Context7Provider';
-import { useTelegram } from '../../hooks/useTelegram';
-import { Header } from '../Layout/Header';
-import { apiService } from '../../services/api';
-import { Match } from '../../types';
+import { useTelegram } from '../hooks/useTelegram';
+import { Header } from '../components/Layout/Header';
+import { apiService } from '../services/api';
+import { Match } from '../types';
 import './MatchesPage.css';
 
 export const MatchesPage: React.FC = () => {
   const navigate = useNavigate();
   const { hapticFeedback } = useTelegram();
-  const { 
-    isConnected: context7Connected, 
-    getCodeSuggestions, 
-    getBestPractices, 
-    checkSecurity 
-  } = useContext7();
-  
   const [matches, setMatches] = useState<Match[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [codeSuggestions, setCodeSuggestions] = useState<string[]>([]);
-  const [bestPractices, setBestPractices] = useState<string[]>([]);
 
   useEffect(() => {
     loadMatches();
   }, []);
 
-  useEffect(() => {
-    if (context7Connected) {
-      loadContext7Data();
-    }
-  }, [context7Connected]);
-
-  const loadContext7Data = async () => {
-    try {
-      // Get React best practices for list rendering
-      const practices = await getBestPractices('react');
-      setBestPractices(practices.slice(0, 3));
-
-      // Get code suggestions for match handling
-      const suggestions = await getCodeSuggestions('match list rendering performance optimization');
-      setCodeSuggestions(suggestions);
-    } catch (error) {
-      console.warn('Failed to load Context7 data:', error);
-    }
-  };
-
   const loadMatches = async () => {
     try {
       setIsLoading(true);
-      const response = await apiService.getMatches();
-      if (response.success && response.data) {
-        setMatches(response.data);
-      } else {
-        // Mock data for demo
-        setMatches([
-          {
-            id: 1,
-            userId: 1,
-            matchedUserId: 2,
-            profile: {
-              id: 1,
-              userId: 1,
-              title: 'Senior Sales Manager',
-              description: 'Experienced in B2B sales with focus on enterprise clients.',
-              industry: 'Technology',
-              location: 'Moscow, Russia',
-              experience: 7,
-              skills: ['B2B Sales', 'CRM', 'Lead Generation'],
-              photos: [],
-              documents: [],
-              isComplete: true,
-              completionScore: 95,
-            },
-            matchedProfile: {
-              id: 2,
-              userId: 2,
-              title: 'Business Development Director',
-              description: 'Strategic business development professional with international experience.',
-              industry: 'Finance',
-              location: 'St. Petersburg, Russia',
-              experience: 10,
-              skills: ['Business Development', 'Strategic Planning', 'Partnerships'],
-              photos: [],
-              documents: [],
-              isComplete: true,
-              completionScore: 92,
-            },
-            compatibilityScore: 87,
-            createdAt: '2024-09-17T10:30:00Z',
-            status: 'active',
-          },
-          {
-            id: 2,
-            userId: 1,
-            matchedUserId: 3,
-            profile: {
-              id: 1,
-              userId: 1,
-              title: 'Senior Sales Manager',
-              description: 'Experienced in B2B sales with focus on enterprise clients.',
-              industry: 'Technology',
-              location: 'Moscow, Russia',
-              experience: 7,
-              skills: ['B2B Sales', 'CRM', 'Lead Generation'],
-              photos: [],
-              documents: [],
-              isComplete: true,
-              completionScore: 95,
-            },
-            matchedProfile: {
-              id: 3,
-              userId: 3,
-              title: 'Sales Director',
-              description: 'Proven track record in building high-performing sales teams.',
-              industry: 'Healthcare',
-              location: 'Kazan, Russia',
-              experience: 8,
-              skills: ['Team Leadership', 'Sales Strategy', 'Client Relations'],
-              photos: [],
-              documents: [],
-              isComplete: true,
-              completionScore: 88,
-            },
-            compatibilityScore: 73,
-            createdAt: '2024-09-16T15:45:00Z',
-            status: 'active',
-          },
-        ]);
-      }
+      const matchesData = await apiService.getMatches();
+      setMatches(matchesData);
     } catch (error) {
       console.error('Failed to load matches:', error);
     } finally {
@@ -136,36 +28,9 @@ export const MatchesPage: React.FC = () => {
     }
   };
 
-  const handleMatchClick = async (match: Match) => {
+  const handleMatchClick = (match: Match) => {
     hapticFeedback('selection');
-    
-    // Security check with Context7
-    if (context7Connected) {
-      const navigationCode = `
-        const handleMatchClick = (match) => {
-          hapticFeedback('selection');
-          navigate(\`/messages/\${match.id}\`);
-        };
-      `;
-      
-      const securityCheck = await checkSecurity(navigationCode);
-      if (securityCheck.issues.length > 0) {
-        console.warn('Security issues detected:', securityCheck.issues);
-      }
-    }
-    
     navigate(`/messages/${match.id}`);
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-    
-    if (diffInHours < 1) return 'Just now';
-    if (diffInHours < 24) return `${diffInHours}h ago`;
-    if (diffInHours < 48) return 'Yesterday';
-    return date.toLocaleDateString();
   };
 
   if (isLoading) {
@@ -173,13 +38,8 @@ export const MatchesPage: React.FC = () => {
       <div className="matches-page">
         <Header title="Matches" />
         <div className="matches-page__loading">
-          <div className="matches-page__spinner"></div>
+          <div className="spinner"></div>
           <p>Loading matches...</p>
-          {context7Connected && (
-            <div className="matches-page__context7-indicator">
-              <span className="context7-badge">Context7 Analyzing Performance</span>
-            </div>
-          )}
         </div>
       </div>
     );
@@ -189,105 +49,50 @@ export const MatchesPage: React.FC = () => {
     <div className="matches-page">
       <Header title="Matches" />
       
-      {/* Context7 Code Suggestions */}
-      {context7Connected && codeSuggestions.length > 0 && (
-        <div className="matches-page__context7-suggestions">
-          <h3>💡 Performance Suggestions (Context7)</h3>
-          <ul>
-            {codeSuggestions.map((suggestion, index) => (
-              <li key={index}>{suggestion}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
       <div className="matches-page__content">
         {matches.length === 0 ? (
           <div className="matches-page__empty">
-            <div className="matches-page__empty-icon">💕</div>
-            <h2>No matches yet</h2>
-            <p>Start swiping to find your perfect business match!</p>
+            <h2>💕 No matches yet</h2>
+            <p>Keep swiping to find your perfect match!</p>
             <button 
-              className="matches-page__start-button"
+              className="matches-page__button"
               onClick={() => navigate('/matching')}
             >
-              Start Matching
+              🔍 Start Swiping
             </button>
           </div>
         ) : (
-          <>
-            <div className="matches-page__header">
-              <h2>Your Matches ({matches.length})</h2>
-              <p>People who liked you back</p>
-              {context7Connected && (
-                <div className="matches-page__context7-status">
-                  <span className="context7-indicator">🔗 Context7 Optimizing</span>
+          <div className="matches-page__list">
+            {matches.map((match) => (
+              <div 
+                key={match.id}
+                className="matches-page__match"
+                onClick={() => handleMatchClick(match)}
+              >
+                <div className="matches-page__avatar">
+                  {match.avatar ? (
+                    <img src={match.avatar} alt={match.name} />
+                  ) : (
+                    <div className="matches-page__avatar-placeholder">
+                      {match.name[0]}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-
-            <div className="matches-page__list">
-              {matches.map((match) => (
-                <div 
-                  key={match.id}
-                  className="matches-page__match"
-                  onClick={() => handleMatchClick(match)}
-                >
-                  <div className="matches-page__match-avatar">
-                    {match.matchedProfile.title.charAt(0)}
-                  </div>
-                  
-                  <div className="matches-page__match-info">
-                    <div className="matches-page__match-header">
-                      <h3>{match.matchedProfile.title}</h3>
-                      <span className="matches-page__match-time">
-                        {formatDate(match.createdAt)}
-                      </span>
-                    </div>
-                    
-                    <p className="matches-page__match-description">
-                      {match.matchedProfile.description}
-                    </p>
-                    
-                    <div className="matches-page__match-details">
-                      <span className="matches-page__match-industry">
-                        {match.matchedProfile.industry}
-                      </span>
-                      <span className="matches-page__match-location">
-                        {match.matchedProfile.location}
-                      </span>
-                    </div>
-                    
-                    <div className="matches-page__match-compatibility">
-                      <span>Compatibility: {match.compatibilityScore}%</span>
-                      <div className="matches-page__compatibility-bar">
-                        <div 
-                          className="matches-page__compatibility-fill"
-                          style={{ width: `${match.compatibilityScore}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="matches-page__match-arrow">
-                    →
-                  </div>
+                
+                <div className="matches-page__info">
+                  <h3>{match.name}</h3>
+                  <p>{match.title} at {match.company}</p>
+                  <p className="matches-page__time">
+                    Matched {new Date(match.matchedAt).toLocaleDateString()}
+                  </p>
                 </div>
-              ))}
-            </div>
-
-            {/* Context7 Best Practices */}
-            {context7Connected && bestPractices.length > 0 && (
-              <div className="matches-page__context7-practices">
-                <h3>📚 Best Practices (Context7)</h3>
-                <ul>
-                  {bestPractices.map((practice, index) => (
-                    <li key={index}>{practice}</li>
-                  ))}
-                </ul>
+                
+                <div className="matches-page__arrow">
+                  →
+                </div>
               </div>
-            )}
-          </>
+            ))}
+          </div>
         )}
       </div>
     </div>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { Context7Provider } from './contexts/Context7Provider';
 import { Header } from './components/Layout/Header';
 import { BottomNavigation } from './components/Layout/BottomNavigation';
 import { AuthPage } from './pages/AuthPage';
@@ -9,7 +8,6 @@ import { ProfilePage } from './pages/ProfilePage';
 import { MatchingPage } from './pages/MatchingPage';
 import { MatchesPage } from './pages/MatchesPage';
 import { MessagesPage } from './pages/MessagesPage';
-import { DemoPage } from './pages/DemoPage';
 import './App.css';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -78,14 +76,6 @@ const AppContent: React.FC = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/demo"
-          element={
-            <ProtectedRoute>
-              <DemoPage />
-            </ProtectedRoute>
-          }
-        />
       </Routes>
 
       {isAuthenticated && <BottomNavigation />}
@@ -95,13 +85,11 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <Context7Provider>
-      <AuthProvider>
-        <Router>
-          <AppContent />
-        </Router>
-      </AuthProvider>
-    </Context7Provider>
+    <AuthProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </AuthProvider>
   );
 };
 
