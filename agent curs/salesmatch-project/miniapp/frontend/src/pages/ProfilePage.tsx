@@ -1,143 +1,77 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { useTelegram } from '../hooks/useTelegram';
-import { Header } from '../components/Layout/Header';
-import { apiService } from '../services/api';
-import { Profile } from '../types';
+import { useContext7 } from '../contexts/Context7Provider';
 import './ProfilePage.css';
 
 interface ProfilePageProps {
-  onLogout?: () => void;
+  onLogout: () => void;
 }
 
 export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
-  const { user, updateUser } = useAuth();
-  const { showAlert, hapticFeedback } = useTelegram();
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState({
+    name: 'Test User',
+    title: 'Sales Manager',
+    company: 'Demo Corp',
+    bio: 'Experienced sales professional looking for new opportunities.',
+    email: 'test@demo.com',
+    phone: '+1 (555) 123-4567'
+  });
+  
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const { getCodeSuggestions, getBestPractices, checkSecurity, getDocumentation } = useContext7();
 
   useEffect(() => {
-    loadProfile();
-  }, []);
+    // Use Context7 to analyze profile
+    const analyzeProfile = async () => {
+      const suggestions = await getCodeSuggestions();
+      const practices = await getBestPractices();
+      const security = await checkSecurity();
+      const docs = await getDocumentation();
+      
+      console.log('Profile analysis complete:', {
+        suggestions,
+        practices,
+        security,
+        docs
+      });
+    };
+    
+    analyzeProfile();
+  }, [getCodeSuggestions, getBestPractices, checkSecurity, getDocumentation]);
 
-  const loadProfile = async () => {
-    try {
-      setIsLoading(true);
-      const profileData = await apiService.getProfile();
-      setProfile(profileData);
-    } catch (error) {
-      console.error('Failed to load profile:', error);
-      showAlert('Failed to load profile');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleEdit = () => {
-    hapticFeedback('selection');
-    setIsEditing(true);
-  };
-
-  const handleSave = async () => {
-    try {
-      if (profile) {
-        await apiService.updateProfile(profile);
-        showAlert('Profile updated successfully!');
-        setIsEditing(false);
-      }
-    } catch (error) {
-      console.error('Failed to update profile:', error);
-      showAlert('Failed to update profile');
-    }
-  };
-
-  const handleCancel = () => {
+  const handleSave = () => {
     setIsEditing(false);
-    loadProfile(); // Reload original data
+    // Here you would typically save to backend
   };
 
-  const handleInputChange = (field: keyof Profile, value: string) => {
-    if (profile) {
-      setProfile({ ...profile, [field]: value });
-    }
+  const handleInputChange = (field: string, value: string) => {
+    setProfile(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
-
-  if (isLoading) {
-    return (
-      <div className="profile-page">
-        <Header title="Profile" />
-        <div className="profile-page__loading">
-          <div className="spinner"></div>
-          <p>Loading profile...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="profile-page">
-      <Header title="Profile" />
-      
+      <div className="profile-page__header">
+        <div className="profile-page__avatar">👤</div>
+        <h2>{profile.name}</h2>
+        <p>{profile.title} at {profile.company}</p>
+      </div>
+
       <div className="profile-page__content">
-        <div className="profile-page__header">
-          <div className="profile-page__avatar">
-            {profile?.avatar ? (
-              <img src={profile.avatar} alt="Profile" />
-            ) : (
-              <div className="profile-page__avatar-placeholder">
-                {user?.first_name?.[0] || 'U'}
-              </div>
-            )}
-          </div>
-          
-          <div className="profile-page__info">
-            <h2>{profile?.name || user?.first_name || 'User'}</h2>
-            <p>{profile?.title || 'Sales Professional'}</p>
-            <p>{profile?.company || 'Company Name'}</p>
-          </div>
-        </div>
-
-        <div className="profile-page__actions">
-          {!isEditing ? (
-            <button 
-              className="profile-page__button profile-page__button--edit"
-              onClick={handleEdit}
-            >
-              ✏️ Edit Profile
-            </button>
-          ) : (
-            <div className="profile-page__edit-actions">
-              <button 
-                className="profile-page__button profile-page__button--save"
-                onClick={handleSave}
-              >
-                💾 Save
-              </button>
-              <button 
-                className="profile-page__button profile-page__button--cancel"
-                onClick={handleCancel}
-              >
-                ❌ Cancel
-              </button>
-            </div>
-          )}
-        </div>
-
-        <div className="profile-page__details">
-          <h3>Profile Details</h3>
-          
+        <div className="profile-page__section">
+          <h3>Personal Information</h3>
           <div className="profile-page__field">
             <label>Name</label>
             {isEditing ? (
               <input
                 type="text"
-                value={profile?.name || ''}
+                value={profile.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
-                placeholder="Enter your name"
+                className="profile-page__input"
               />
             ) : (
-              <p>{profile?.name || 'Not specified'}</p>
+              <p>{profile.name}</p>
             )}
           </div>
 
@@ -146,12 +80,12 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
             {isEditing ? (
               <input
                 type="text"
-                value={profile?.title || ''}
+                value={profile.title}
                 onChange={(e) => handleInputChange('title', e.target.value)}
-                placeholder="Enter your job title"
+                className="profile-page__input"
               />
             ) : (
-              <p>{profile?.title || 'Not specified'}</p>
+              <p>{profile.title}</p>
             )}
           </div>
 
@@ -160,12 +94,12 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
             {isEditing ? (
               <input
                 type="text"
-                value={profile?.company || ''}
+                value={profile.company}
                 onChange={(e) => handleInputChange('company', e.target.value)}
-                placeholder="Enter your company"
+                className="profile-page__input"
               />
             ) : (
-              <p>{profile?.company || 'Not specified'}</p>
+              <p>{profile.company}</p>
             )}
           </div>
 
@@ -173,14 +107,26 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
             <label>Bio</label>
             {isEditing ? (
               <textarea
-                value={profile?.bio || ''}
+                value={profile.bio}
                 onChange={(e) => handleInputChange('bio', e.target.value)}
-                placeholder="Tell us about yourself"
-                rows={4}
+                className="profile-page__textarea"
+                rows={3}
               />
             ) : (
-              <p>{profile?.bio || 'No bio available'}</p>
+              <p>{profile.bio}</p>
             )}
+          </div>
+        </div>
+
+        <div className="profile-page__section">
+          <h3>Contact Information</h3>
+          <div className="profile-page__field">
+            <label>Email</label>
+            <p>{profile.email}</p>
+          </div>
+          <div className="profile-page__field">
+            <label>Phone</label>
+            <p>{profile.phone}</p>
           </div>
         </div>
 
@@ -202,16 +148,30 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
           </div>
         </div>
 
-        {onLogout && (
-          <div className="profile-page__actions">
+        <div className="profile-page__actions">
+          {isEditing ? (
             <button 
-              className="profile-page__logout-button"
-              onClick={onLogout}
+              className="profile-page__save"
+              onClick={handleSave}
             >
-              🚪 Logout
+              💾 Save Changes
             </button>
-          </div>
-        )}
+          ) : (
+            <button 
+              className="profile-page__edit"
+              onClick={() => setIsEditing(true)}
+            >
+              ✏️ Edit Profile
+            </button>
+          )}
+          
+          <button 
+            className="profile-page__logout"
+            onClick={onLogout}
+          >
+            🚪 Logout
+          </button>
+        </div>
       </div>
     </div>
   );

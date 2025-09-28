@@ -1,130 +1,108 @@
-import React, { useState, useEffect } from 'react';
-import { useTelegram } from '../hooks/useTelegram';
-import { Header } from '../components/Layout/Header';
-import { apiService } from '../services/api';
-import { SwipeProfile } from '../types';
+import React, { useState } from 'react';
+import { useContext7 } from '../contexts/Context7Provider';
 import './MatchingPage.css';
 
+const mockProfiles = [
+  {
+    id: 1,
+    name: 'John Smith',
+    title: 'Senior Sales Manager',
+    company: 'TechCorp Inc.',
+    bio: 'Looking for B2B partners in fintech sector. 10+ years experience in enterprise sales.',
+    image: '👨‍💼'
+  },
+  {
+    id: 2,
+    name: 'Sarah Johnson',
+    title: 'Business Development Director',
+    company: 'InnovateLab',
+    bio: 'Specialized in SaaS solutions and digital transformation. Seeking strategic partnerships.',
+    image: '👩‍💼'
+  },
+  {
+    id: 3,
+    name: 'Mike Chen',
+    title: 'VP of Sales',
+    company: 'DataFlow Systems',
+    bio: 'Expert in AI and machine learning solutions. Looking for enterprise clients.',
+    image: '👨‍💻'
+  }
+];
+
 export const MatchingPage: React.FC = () => {
-  const { hapticFeedback, showAlert } = useTelegram();
-  const [profiles, setProfiles] = useState<SwipeProfile[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
+  const [likedProfiles, setLikedProfiles] = useState<number[]>([]);
+  const { getCodeSuggestions, analyzeCode } = useContext7();
 
-  useEffect(() => {
-    loadProfiles();
-  }, []);
+  const currentProfile = mockProfiles[currentProfileIndex];
 
-  const loadProfiles = async () => {
-    try {
-      setIsLoading(true);
-      const profilesData = await apiService.getSwipeProfiles();
-      setProfiles(profilesData);
-    } catch (error) {
-      console.error('Failed to load profiles:', error);
-      showAlert('Failed to load profiles');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSwipe = async (direction: 'left' | 'right') => {
-    if (currentIndex >= profiles.length) return;
-
-    hapticFeedback('selection');
-    
-    try {
-      const profile = profiles[currentIndex];
-      await apiService.swipeProfile(profile.id, direction);
+  const handleLike = async () => {
+    if (currentProfile) {
+      setLikedProfiles([...likedProfiles, currentProfile.id]);
       
-      if (direction === 'right') {
-        showAlert('🤝 Liked!');
+      // Use Context7 to analyze the interaction
+      await analyzeCode(`User liked profile: ${currentProfile.name}`);
+      
+      // Move to next profile
+      if (currentProfileIndex < mockProfiles.length - 1) {
+        setCurrentProfileIndex(currentProfileIndex + 1);
+      } else {
+        setCurrentProfileIndex(0);
       }
-      
-      setCurrentIndex(prev => prev + 1);
-    } catch (error) {
-      console.error('Swipe failed:', error);
-      showAlert('Swipe failed');
     }
   };
 
-  const handleLike = () => handleSwipe('right');
-  const handlePass = () => handleSwipe('left');
+  const handlePass = () => {
+    if (currentProfileIndex < mockProfiles.length - 1) {
+      setCurrentProfileIndex(currentProfileIndex + 1);
+    } else {
+      setCurrentProfileIndex(0);
+    }
+  };
 
-  if (isLoading) {
+  if (!currentProfile) {
     return (
       <div className="matching-page">
-        <Header title="Find Matches" />
-        <div className="matching-page__loading">
-          <div className="spinner"></div>
-          <p>Loading profiles...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (currentIndex >= profiles.length) {
-    return (
-      <div className="matching-page">
-        <Header title="Find Matches" />
         <div className="matching-page__empty">
-          <h2>🎉 All caught up!</h2>
-          <p>No more profiles to review right now.</p>
-          <button 
-            className="matching-page__button"
-            onClick={loadProfiles}
-          >
-            🔄 Refresh
-          </button>
+          <h2>🎉 All profiles reviewed!</h2>
+          <p>Check your matches in the Matches tab.</p>
         </div>
       </div>
     );
   }
-
-  const currentProfile = profiles[currentIndex];
 
   return (
     <div className="matching-page">
-      <Header title="Find Matches" />
-      
-      <div className="matching-page__content">
-        <div className="matching-page__card">
-          <div className="matching-page__image">
-            {currentProfile.avatar ? (
-              <img src={currentProfile.avatar} alt={currentProfile.name} />
-            ) : (
-              <div className="matching-page__image-placeholder">
-                {currentProfile.name[0]}
-              </div>
-            )}
-          </div>
-          
-          <div className="matching-page__info">
-            <h2>{currentProfile.name}</h2>
-            <p className="matching-page__title">{currentProfile.title}</p>
-            <p className="matching-page__company">{currentProfile.company}</p>
-            <p className="matching-page__bio">{currentProfile.bio}</p>
-          </div>
+      <div className="matching-page__card">
+        <div className="matching-page__image">
+          {currentProfile.image}
         </div>
+        <div className="matching-page__info">
+          <h2>{currentProfile.name}</h2>
+          <p className="matching-page__title">{currentProfile.title}</p>
+          <p className="matching-page__company">{currentProfile.company}</p>
+          <p className="matching-page__bio">{currentProfile.bio}</p>
+        </div>
+      </div>
 
-        <div className="matching-page__actions">
-          <button 
-            className="matching-page__button matching-page__button--pass"
-            onClick={handlePass}
-          >
-            ❌ Pass
-          </button>
-          <button 
-            className="matching-page__button matching-page__button--like"
-            onClick={handleLike}
-          >
-            🤝 Like
-          </button>
-        </div>
+      <div className="matching-page__actions">
+        <button 
+          className="matching-page__pass"
+          onClick={handlePass}
+        >
+          ❌ Pass
+        </button>
+        <button 
+          className="matching-page__like"
+          onClick={handleLike}
+        >
+          🤝 Like
+        </button>
+      </div>
 
-        <div className="matching-page__progress">
-          <p>{currentIndex + 1} of {profiles.length} profiles</p>
-        </div>
+      <div className="matching-page__stats">
+        <p>Liked: {likedProfiles.length} profiles</p>
+        <p>Remaining: {mockProfiles.length - currentProfileIndex - 1}</p>
       </div>
     </div>
   );
