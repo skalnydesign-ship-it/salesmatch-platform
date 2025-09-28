@@ -47,41 +47,31 @@
 
 .matching-page__actions {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   justify-content: center;
   margin-bottom: 2rem;
 }
 
 .matching-page__pass,
 .matching-page__like {
-  padding: 1rem 2rem;
-  border: none;
-  border-radius: 50px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 120px;
+  flex: 1;
+  max-width: 150px;
 }
 
-.matching-page__pass {
-  background: #f5f5f5;
-  color: #666;
+.matching-page__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
 }
 
-.matching-page__pass:hover {
-  background: #e0e0e0;
-  transform: translateY(-2px);
-}
-
-.matching-page__like {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-}
-
-.matching-page__like:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+.matching-page__name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #333;
 }
 
 .matching-page__stats {
@@ -95,7 +85,13 @@
 }
 
 .matching-page__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
   text-align: center;
+  gap: 1rem;
   padding: 3rem;
   color: #666;
 }
@@ -104,3 +100,4 @@
   color: #333;
   margin-bottom: 1rem;
 }
+

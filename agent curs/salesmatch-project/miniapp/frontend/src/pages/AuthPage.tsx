@@ -1,5 +1,8 @@
 import React from 'react';
 import { useContext7 } from '../contexts/Context7Provider';
+import { AnimatedButton } from '../components/animations/AnimatedButton';
+import { AnimatedText } from '../components/animations/AnimatedText';
+import { AnimatedCard } from '../components/animations/AnimatedCard';
 import './AuthPage.css';
 
 interface AuthPageProps {
@@ -18,32 +21,74 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuth }) => {
   return (
     <div className="auth-page">
       <div className="auth-page__content">
-        <div className="auth-page__header">
-          <h1>🚀 SalesMatch Pro</h1>
-          <p>B2B Sales Matching Platform</p>
-        </div>
+        <AnimatedCard className="auth-page__header" delay={0.2}>
+          <AnimatedText 
+            text="🚀 SalesMatch Pro" 
+            variant="scale"
+            className="animated-text--gradient"
+          />
+          <AnimatedText 
+            text="B2B Sales Matching Platform" 
+            variant="fadeIn"
+            delay={0.5}
+          />
+        </AnimatedCard>
 
-        <div className="auth-page__features">
-          <h2>✨ Features</h2>
+        <AnimatedCard className="auth-page__features" delay={0.4}>
+          <AnimatedText 
+            text="✨ Features" 
+            variant="slideUp"
+            delay={0.6}
+          />
           <ul>
-            <li>🔍 Smart Profile Matching</li>
-            <li>💬 Real-time Messaging</li>
-            <li>📊 Analytics Dashboard</li>
-            <li>🤖 AI-Powered Suggestions</li>
+            <li>
+              <AnimatedText 
+                text="🔍 Smart Profile Matching" 
+                variant="slideLeft"
+                delay={0.8}
+              />
+            </li>
+            <li>
+              <AnimatedText 
+                text="💬 Real-time Messaging" 
+                variant="slideLeft"
+                delay={0.9}
+              />
+            </li>
+            <li>
+              <AnimatedText 
+                text="📊 Analytics Dashboard" 
+                variant="slideLeft"
+                delay={1.0}
+              />
+            </li>
+            <li>
+              <AnimatedText 
+                text="🤖 AI-Powered Suggestions" 
+                variant="slideLeft"
+                delay={1.1}
+              />
+            </li>
           </ul>
-        </div>
+        </AnimatedCard>
 
         <div className="auth-page__login">
-          <button 
-            className="auth-page__button"
+          <AnimatedButton
+            variant="primary"
+            size="lg"
             onClick={handleLogin}
+            className="auth-page__button"
           >
             🚀 Login to SalesMatch Pro
-          </button>
+          </AnimatedButton>
         </div>
 
         <div className="auth-page__footer">
-          <p>Powered by Deep Fon Corporation</p>
+          <AnimatedText 
+            text="Powered by Deep Fon Corporation" 
+            variant="fadeIn"
+            delay={1.5}
+          />
         </div>
       </div>
     </div>

@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { useContext7 } from '../contexts/Context7Provider';
+import { AnimatedCard } from '../components/animations/AnimatedCard';
+import { AnimatedButton } from '../components/animations/AnimatedButton';
+import { AnimatedText } from '../components/animations/AnimatedText';
+import { LoadingSpinner } from '../components/animations/LoadingSpinner';
 import './MatchingPage.css';
 
 const mockProfiles = [
@@ -32,23 +36,29 @@ const mockProfiles = [
 export const MatchingPage: React.FC = () => {
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [likedProfiles, setLikedProfiles] = useState<number[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { getCodeSuggestions, analyzeCode } = useContext7();
 
   const currentProfile = mockProfiles[currentProfileIndex];
 
   const handleLike = async () => {
     if (currentProfile) {
+      setIsLoading(true);
       setLikedProfiles([...likedProfiles, currentProfile.id]);
       
       // Use Context7 to analyze the interaction
       await analyzeCode(`User liked profile: ${currentProfile.name}`);
       
-      // Move to next profile
-      if (currentProfileIndex < mockProfiles.length - 1) {
-        setCurrentProfileIndex(currentProfileIndex + 1);
-      } else {
-        setCurrentProfileIndex(0);
-      }
+      // Simulate loading delay for better UX
+      setTimeout(() => {
+        setIsLoading(false);
+        // Move to next profile
+        if (currentProfileIndex < mockProfiles.length - 1) {
+          setCurrentProfileIndex(currentProfileIndex + 1);
+        } else {
+          setCurrentProfileIndex(0);
+        }
+      }, 1000);
     }
   };
 
@@ -60,12 +70,30 @@ export const MatchingPage: React.FC = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="matching-page">
+        <div className="matching-page__loading">
+          <LoadingSpinner size="lg" color="primary" text="Finding your perfect match..." />
+        </div>
+      </div>
+    );
+  }
+
   if (!currentProfile) {
     return (
       <div className="matching-page">
         <div className="matching-page__empty">
-          <h2>🎉 All profiles reviewed!</h2>
-          <p>Check your matches in the Matches tab.</p>
+          <AnimatedText 
+            text="🎉 All profiles reviewed!" 
+            variant="scale"
+            className="animated-text--gradient"
+          />
+          <AnimatedText 
+            text="Check your matches in the Matches tab." 
+            variant="fadeIn"
+            delay={0.5}
+          />
         </div>
       </div>
     );
@@ -73,36 +101,71 @@ export const MatchingPage: React.FC = () => {
 
   return (
     <div className="matching-page">
-      <div className="matching-page__card">
+      <AnimatedCard 
+        className="matching-page__card"
+        delay={0.2}
+        direction="up"
+      >
         <div className="matching-page__image">
           {currentProfile.image}
         </div>
         <div className="matching-page__info">
-          <h2>{currentProfile.name}</h2>
-          <p className="matching-page__title">{currentProfile.title}</p>
-          <p className="matching-page__company">{currentProfile.company}</p>
-          <p className="matching-page__bio">{currentProfile.bio}</p>
+          <AnimatedText 
+            text={currentProfile.name}
+            variant="slideUp"
+            className="matching-page__name"
+          />
+          <AnimatedText 
+            text={currentProfile.title}
+            variant="slideUp"
+            delay={0.1}
+            className="matching-page__title"
+          />
+          <AnimatedText 
+            text={currentProfile.company}
+            variant="slideUp"
+            delay={0.2}
+            className="matching-page__company"
+          />
+          <AnimatedText 
+            text={currentProfile.bio}
+            variant="fadeIn"
+            delay={0.3}
+            className="matching-page__bio"
+          />
         </div>
-      </div>
+      </AnimatedCard>
 
       <div className="matching-page__actions">
-        <button 
-          className="matching-page__pass"
+        <AnimatedButton
+          variant="danger"
+          size="lg"
           onClick={handlePass}
+          className="matching-page__pass"
         >
           ❌ Pass
-        </button>
-        <button 
-          className="matching-page__like"
+        </AnimatedButton>
+        <AnimatedButton
+          variant="success"
+          size="lg"
           onClick={handleLike}
+          className="matching-page__like"
         >
           🤝 Like
-        </button>
+        </AnimatedButton>
       </div>
 
       <div className="matching-page__stats">
-        <p>Liked: {likedProfiles.length} profiles</p>
-        <p>Remaining: {mockProfiles.length - currentProfileIndex - 1}</p>
+        <AnimatedText 
+          text={`Liked: ${likedProfiles.length} profiles`}
+          variant="fadeIn"
+          delay={0.5}
+        />
+        <AnimatedText 
+          text={`Remaining: ${mockProfiles.length - currentProfileIndex - 1}`}
+          variant="fadeIn"
+          delay={0.6}
+        />
       </div>
     </div>
   );

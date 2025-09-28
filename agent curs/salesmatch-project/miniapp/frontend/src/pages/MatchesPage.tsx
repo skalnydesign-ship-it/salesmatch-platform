@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useContext7 } from '../contexts/Context7Provider';
+import { AnimatedCard } from '../components/animations/AnimatedCard';
+import { AnimatedText } from '../components/animations/AnimatedText';
 import './MatchesPage.css';
 
 const mockMatches = [
@@ -44,31 +46,78 @@ export const MatchesPage: React.FC = () => {
   return (
     <div className="matches-page">
       <div className="matches-page__header">
-        <h2>🤝 Your Matches</h2>
-        <p>People who liked you back</p>
+        <AnimatedText 
+          text="🤝 Your Matches" 
+          variant="slideUp"
+          className="animated-text--gradient"
+        />
+        <AnimatedText 
+          text="People who liked you back" 
+          variant="fadeIn"
+          delay={0.3}
+        />
       </div>
 
       <div className="matches-page__list">
-        {matches.map((match) => (
-          <div key={match.id} className="matches-page__match">
+        {matches.map((match, index) => (
+          <AnimatedCard
+            key={match.id}
+            className="matches-page__match"
+            delay={index * 0.1}
+            direction="up"
+          >
             <div className="matches-page__avatar">
               {match.image}
             </div>
             <div className="matches-page__info">
-              <h3>{match.name}</h3>
-              <p className="matches-page__title">{match.title}</p>
-              <p className="matches-page__company">{match.company}</p>
+              <AnimatedText 
+                text={match.name}
+                variant="slideUp"
+                delay={index * 0.1 + 0.2}
+              />
+              <AnimatedText 
+                text={match.title}
+                variant="fadeIn"
+                delay={index * 0.1 + 0.3}
+                className="matches-page__title"
+              />
+              <AnimatedText 
+                text={match.company}
+                variant="fadeIn"
+                delay={index * 0.1 + 0.4}
+                className="matches-page__company"
+              />
               <div className="matches-page__score">
-                <span className="matches-page__score-label">Match Score:</span>
-                <span className="matches-page__score-value">{match.matchScore}%</span>
+                <AnimatedText 
+                  text="Match Score:"
+                  variant="fadeIn"
+                  delay={index * 0.1 + 0.5}
+                  className="matches-page__score-label"
+                />
+                <AnimatedText 
+                  text={`${match.matchScore}%`}
+                  variant="scale"
+                  delay={index * 0.1 + 0.6}
+                  className="matches-page__score-value"
+                />
               </div>
-              <p className="matches-page__message">{match.lastMessage}</p>
-              <p className="matches-page__timestamp">{match.timestamp}</p>
+              <AnimatedText 
+                text={match.lastMessage}
+                variant="fadeIn"
+                delay={index * 0.1 + 0.7}
+                className="matches-page__message"
+              />
+              <AnimatedText 
+                text={match.timestamp}
+                variant="fadeIn"
+                delay={index * 0.1 + 0.8}
+                className="matches-page__timestamp"
+              />
             </div>
             <button className="matches-page__chat">
               💬
             </button>
-          </div>
+          </AnimatedCard>
         ))}
       </div>
 
