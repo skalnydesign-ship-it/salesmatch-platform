@@ -17,20 +17,35 @@ const navItems: NavItem[] = [
   { id: 'profile', label: 'Профиль', icon: '👤', path: '/profile' },
 ];
 
-export const BottomNavigation: React.FC = () => {
+interface BottomNavigationProps {
+  currentPage?: string;
+  onPageChange?: (page: string) => void;
+}
+
+export const BottomNavigation: React.FC<BottomNavigationProps> = ({ 
+  currentPage, 
+  onPageChange 
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { hapticFeedback } = useTelegram();
 
   const handleNavClick = (item: NavItem) => {
     hapticFeedback('selection');
-    navigate(item.path);
+    
+    if (onPageChange) {
+      onPageChange(item.id);
+    } else {
+      navigate(item.path);
+    }
   };
+
+  const activePage = currentPage || location.pathname.replace('/', '') || 'matching';
 
   return (
     <nav className="bottom-nav">
       {navItems.map((item) => {
-        const isActive = location.pathname === item.path || 
+        const isActive = activePage === item.id || 
                         (item.path === '/matching' && location.pathname === '/');
         
         return (

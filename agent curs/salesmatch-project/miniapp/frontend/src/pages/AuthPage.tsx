@@ -4,7 +4,11 @@ import { useAuth } from '../contexts/AuthContext';
 import { useTelegram } from '../hooks/useTelegram';
 import './AuthPage.css';
 
-export const AuthPage: React.FC = () => {
+interface AuthPageProps {
+  onAuth?: () => void;
+}
+
+export const AuthPage: React.FC<AuthPageProps> = ({ onAuth }) => {
   const navigate = useNavigate();
   const { isAuthenticated, isLoading } = useAuth();
   const { user: telegramUser, initData, showAlert } = useTelegram();
@@ -17,20 +21,25 @@ export const AuthPage: React.FC = () => {
 
   const handleLogin = async () => {
     try {
-      if (!initData) {
+      if (!initData && !onAuth) {
         showAlert('Telegram authentication data not available');
         return;
       }
 
       // Show loading state
-      showAlert('Authenticating with Telegram...');
+      showAlert('Authenticating...');
 
       // Simulate authentication delay
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       // In a real app, this would call the actual login function
       showAlert('🎉 Welcome to SalesMatch Pro!');
-      navigate('/profile');
+      
+      if (onAuth) {
+        onAuth();
+      } else {
+        navigate('/profile');
+      }
     } catch (error) {
       console.error('Login error:', error);
       showAlert('❌ Login failed. Please try again.');
@@ -70,9 +79,9 @@ export const AuthPage: React.FC = () => {
           <button 
             className="auth-page__button"
             onClick={handleLogin}
-            disabled={!initData}
+            disabled={!initData && !onAuth}
           >
-            {initData ? '🚀 Login with Telegram' : '⏳ Initializing...'}
+            {initData ? '🚀 Login with Telegram' : '🚀 Login to SalesMatch Pro'}
           </button>
           
           {telegramUser && (

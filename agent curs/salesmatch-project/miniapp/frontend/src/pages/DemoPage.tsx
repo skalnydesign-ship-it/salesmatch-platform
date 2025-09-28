@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useContext7 } from '../../contexts/Context7Provider';
-import { useTelegram } from '../../hooks/useTelegram';
+import { useTelegram } from '../hooks/useTelegram';
 import { Header } from '../components/Layout/Header';
 import './DemoPage.css';
 
 export const DemoPage: React.FC = () => {
-  const { 
-    isConnected: context7Connected, 
-    getCodeSuggestions, 
-    getBestPractices, 
-    checkSecurity,
-    getDocumentation 
-  } = useContext7();
   const { showAlert, hapticFeedback } = useTelegram();
+  
+  // Mock Context7 functionality for demo
+  const context7Connected = true;
+  const getCodeSuggestions = async () => ({ suggestions: ['Mock suggestion 1', 'Mock suggestion 2'] });
+  const getBestPractices = async () => ({ practices: ['Mock practice 1', 'Mock practice 2'] });
+  const checkSecurity = async () => ({ issues: [], score: 95 });
+  const getDocumentation = async () => ({ docs: ['Mock documentation'] });
   
   const [activeDemo, setActiveDemo] = useState<string>('');
   const [demoResults, setDemoResults] = useState<any>({});

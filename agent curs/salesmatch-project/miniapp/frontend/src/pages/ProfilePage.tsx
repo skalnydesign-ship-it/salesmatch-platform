@@ -6,7 +6,11 @@ import { apiService } from '../services/api';
 import { Profile } from '../types';
 import './ProfilePage.css';
 
-export const ProfilePage: React.FC = () => {
+interface ProfilePageProps {
+  onLogout?: () => void;
+}
+
+export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
   const { user, updateUser } = useAuth();
   const { showAlert, hapticFeedback } = useTelegram();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -197,6 +201,17 @@ export const ProfilePage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {onLogout && (
+          <div className="profile-page__actions">
+            <button 
+              className="profile-page__logout-button"
+              onClick={onLogout}
+            >
+              🚪 Logout
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
