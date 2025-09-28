@@ -7,7 +7,7 @@ import { ProfilePage } from './pages/ProfilePage';
 import { MatchingPage } from './pages/MatchingPage';
 import { MatchesPage } from './pages/MatchesPage';
 import { MessagesPage } from './pages/MessagesPage';
-import { DemoPage } from './pages/DemoPage';
+// import { DemoPage } from './pages/DemoPage';
 import './App.css';
 
 // Mock user data for web version
@@ -46,7 +46,7 @@ const WebApp: React.FC = () => {
       case 'profile':
         return <ProfilePage onLogout={handleLogout} />;
       case 'demo':
-        return <DemoPage />;
+        return <div className="demo-page"><h2>Demo Page</h2><p>Demo functionality coming soon!</p></div>;
       default:
         return <MatchingPage />;
     }
