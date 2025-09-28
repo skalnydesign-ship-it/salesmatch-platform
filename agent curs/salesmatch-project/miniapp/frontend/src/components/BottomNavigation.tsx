@@ -8,7 +8,7 @@ interface BottomNavigationProps {
 
 const navItems = [
   { id: 'matching', label: 'Поиск', icon: '🔍' },
-  { id: 'matches', label: 'Матчи', icon: '💕' },
+  { id: 'matches', label: 'Матчи', icon: '🤝' },
   { id: 'messages', label: 'Чаты', icon: '💬' },
   { id: 'profile', label: 'Профиль', icon: '👤' },
 ];

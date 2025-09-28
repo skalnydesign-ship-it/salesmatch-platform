@@ -44,7 +44,7 @@ export const MatchesPage: React.FC = () => {
   return (
     <div className="matches-page">
       <div className="matches-page__header">
-        <h2>💕 Your Matches</h2>
+        <h2>🤝 Your Matches</h2>
         <p>People who liked you back</p>
       </div>
 

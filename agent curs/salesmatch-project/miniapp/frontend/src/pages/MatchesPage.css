@@ -13,6 +13,9 @@
   color: #333;
   margin-bottom: 0.5rem;
   font-size: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .matches-page__header p {
