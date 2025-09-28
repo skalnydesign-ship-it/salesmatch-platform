@@ -94,9 +94,34 @@ build/
 tmp/
 temp/
 
-# SSH files
+# SSH files and credentials
 *.pem
 *.key
+*.ppk
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+known_hosts
+authorized_keys
+
+# API Keys and Secrets
+*.secret
+*.key
+*secret*
+*password*
+*token*
+*api_key*
+*private_key*
+*access_token*
+*bot_token*
+*webhook_secret*
+
+# Configuration files with sensitive data
+config.json
+secrets.json
+credentials.json
+auth.json
 
 # Database files
 *.db
@@ -120,4 +145,5 @@ coverage/
 
 # Local development
 .local
+
 

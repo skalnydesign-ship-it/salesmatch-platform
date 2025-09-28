@@ -2,7 +2,7 @@
 
 set timeout 10
 set host "89.111.131.166"
-set password "4@dU8HRJ542uumZB"
+set password "$env(SSH_PASSWORD)"
 
 set users {ubuntu debian centos admin user}
 

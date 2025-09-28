@@ -3,7 +3,7 @@
 set timeout 30
 set host "89.111.131.166"
 set user "root"
-set password "4@dU8HRJ542uumZB"
+set password "$env(SSH_PASSWORD)"
 
 spawn ssh -o StrictHostKeyChecking=no $user@$host
 
