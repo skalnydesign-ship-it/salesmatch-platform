@@ -98,3 +98,4 @@
 .animated-button:active:not(:disabled) {
   transform: translateY(0);
 }
+

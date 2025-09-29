@@ -44,7 +44,7 @@ export const MessagesPage: React.FC = () => {
             className="messages-page__back"
             onClick={() => setSelectedConversation(null)}
           >
-            ← Back
+            ← Назад
           </button>
           <div className="messages-page__contact">
             <span className="messages-page__contact-avatar">{conversation?.image}</span>
@@ -55,28 +55,28 @@ export const MessagesPage: React.FC = () => {
           </div>
         </div>
         
-        <div className="messages-page__chat">
+          <div className="messages-page__chat">
           <div className="messages-page__message messages-page__message--sent">
-            <p>Hello! I'm interested in your services.</p>
-            <span className="messages-page__time">2:30 PM</span>
+            <p>Здравствуйте! Интересуют ваши услуги.</p>
+            <span className="messages-page__time">14:30</span>
           </div>
           <div className="messages-page__message messages-page__message--received">
-            <p>Hi! Great to hear from you. What specific services are you looking for?</p>
-            <span className="messages-page__time">2:32 PM</span>
+            <p>Здравствуйте! Рады вашему обращению. Какие именно услуги вам нужны?</p>
+            <span className="messages-page__time">14:32</span>
           </div>
           <div className="messages-page__message messages-page__message--sent">
-            <p>We're looking for AI solutions for our sales team.</p>
-            <span className="messages-page__time">2:35 PM</span>
+            <p>Нам нужны AI-решения для отдела продаж.</p>
+            <span className="messages-page__time">14:35</span>
           </div>
         </div>
         
         <div className="messages-page__input">
           <input 
             type="text" 
-            placeholder="Type a message..."
+            placeholder="Напишите сообщение..."
             className="messages-page__input-field"
           />
-          <button className="messages-page__send">Send</button>
+          <button className="messages-page__send">Отправить</button>
         </div>
       </div>
     );
@@ -85,8 +85,8 @@ export const MessagesPage: React.FC = () => {
   return (
     <div className="messages-page">
       <div className="messages-page__header">
-        <h2>💬 Messages</h2>
-        <p>Your conversations</p>
+        <h2>💬 Сообщения</h2>
+        <p>Ваши диалоги</p>
       </div>
 
       <div className="messages-page__list">
@@ -116,8 +116,8 @@ export const MessagesPage: React.FC = () => {
 
       {mockConversations.length === 0 && (
         <div className="messages-page__empty">
-          <h3>No messages yet</h3>
-          <p>Start a conversation with your matches!</p>
+          <h3>Пока нет сообщений</h3>
+          <p>Начните диалог с вашими совпадениями!</p>
         </div>
       )}
     </div>

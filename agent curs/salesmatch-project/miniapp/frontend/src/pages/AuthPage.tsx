@@ -28,7 +28,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuth }) => {
             className="animated-text--gradient"
           />
           <AnimatedText 
-            text="B2B Sales Matching Platform" 
+            text="B2B платформа для матчмейкинга" 
             variant="fadeIn"
             delay={0.5}
           />
@@ -36,35 +36,35 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuth }) => {
 
         <AnimatedCard className="auth-page__features" delay={0.4}>
           <AnimatedText 
-            text="✨ Features" 
+            text="✨ Возможности" 
             variant="slideUp"
             delay={0.6}
           />
           <ul>
             <li>
               <AnimatedText 
-                text="🔍 Smart Profile Matching" 
+                text="🔍 Умный подбор профилей" 
                 variant="slideLeft"
                 delay={0.8}
               />
             </li>
             <li>
               <AnimatedText 
-                text="💬 Real-time Messaging" 
+                text="💬 Сообщения в реальном времени" 
                 variant="slideLeft"
                 delay={0.9}
               />
             </li>
             <li>
               <AnimatedText 
-                text="📊 Analytics Dashboard" 
+                text="📊 Аналитическая панель" 
                 variant="slideLeft"
                 delay={1.0}
               />
             </li>
             <li>
               <AnimatedText 
-                text="🤖 AI-Powered Suggestions" 
+                text="🤖 Рекомендации на основе ИИ" 
                 variant="slideLeft"
                 delay={1.1}
               />
@@ -79,13 +79,13 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuth }) => {
             onClick={handleLogin}
             className="auth-page__button"
           >
-            🚀 Login to SalesMatch Pro
+            🚀 Войти в SalesMatch Pro
           </AnimatedButton>
         </div>
 
         <div className="auth-page__footer">
           <AnimatedText 
-            text="Powered by Deep Fon Corporation" 
+            text="При поддержке Deep Fon Corporation" 
             variant="fadeIn"
             delay={1.5}
           />

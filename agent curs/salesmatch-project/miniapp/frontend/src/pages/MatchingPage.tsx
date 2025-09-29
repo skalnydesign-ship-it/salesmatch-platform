@@ -74,7 +74,7 @@ export const MatchingPage: React.FC = () => {
     return (
       <div className="matching-page">
         <div className="matching-page__loading">
-          <LoadingSpinner size="lg" color="primary" text="Finding your perfect match..." />
+          <LoadingSpinner size="lg" color="primary" text="Подбираем идеальное совпадение..." />
         </div>
       </div>
     );
@@ -85,12 +85,12 @@ export const MatchingPage: React.FC = () => {
       <div className="matching-page">
         <div className="matching-page__empty">
           <AnimatedText 
-            text="🎉 All profiles reviewed!" 
+            text="🎉 Все анкеты просмотрены!" 
             variant="scale"
             className="animated-text--gradient"
           />
           <AnimatedText 
-            text="Check your matches in the Matches tab." 
+            text="Проверьте совпадения во вкладке Матчи." 
             variant="fadeIn"
             delay={0.5}
           />
@@ -143,7 +143,7 @@ export const MatchingPage: React.FC = () => {
           onClick={handlePass}
           className="matching-page__pass"
         >
-          ❌ Pass
+          ❌ Пропустить
         </AnimatedButton>
         <AnimatedButton
           variant="success"
@@ -151,18 +151,18 @@ export const MatchingPage: React.FC = () => {
           onClick={handleLike}
           className="matching-page__like"
         >
-          🤝 Like
+          🤝 Нравится
         </AnimatedButton>
       </div>
 
       <div className="matching-page__stats">
         <AnimatedText 
-          text={`Liked: ${likedProfiles.length} profiles`}
+          text={`Понравилось: ${likedProfiles.length}`}
           variant="fadeIn"
           delay={0.5}
         />
         <AnimatedText 
-          text={`Remaining: ${mockProfiles.length - currentProfileIndex - 1}`}
+          text={`Осталось: ${mockProfiles.length - currentProfileIndex - 1}`}
           variant="fadeIn"
           delay={0.6}
         />

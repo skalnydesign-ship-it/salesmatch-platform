@@ -55,14 +55,14 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
       <div className="profile-page__header">
         <div className="profile-page__avatar">👤</div>
         <h2>{profile.name}</h2>
-        <p>{profile.title} at {profile.company}</p>
+        <p>{profile.title} в {profile.company}</p>
       </div>
 
       <div className="profile-page__content">
         <div className="profile-page__section">
-          <h3>Personal Information</h3>
+          <h3>Личные данные</h3>
           <div className="profile-page__field">
-            <label>Name</label>
+            <label>Имя</label>
             {isEditing ? (
               <input
                 type="text"
@@ -76,7 +76,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
           </div>
 
           <div className="profile-page__field">
-            <label>Title</label>
+            <label>Должность</label>
             {isEditing ? (
               <input
                 type="text"
@@ -90,7 +90,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
           </div>
 
           <div className="profile-page__field">
-            <label>Company</label>
+            <label>Компания</label>
             {isEditing ? (
               <input
                 type="text"
@@ -104,7 +104,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
           </div>
 
           <div className="profile-page__field">
-            <label>Bio</label>
+            <label>О себе</label>
             {isEditing ? (
               <textarea
                 value={profile.bio}
@@ -119,31 +119,31 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
         </div>
 
         <div className="profile-page__section">
-          <h3>Contact Information</h3>
+          <h3>Контакты</h3>
           <div className="profile-page__field">
             <label>Email</label>
             <p>{profile.email}</p>
           </div>
           <div className="profile-page__field">
-            <label>Phone</label>
+            <label>Телефон</label>
             <p>{profile.phone}</p>
           </div>
         </div>
 
         <div className="profile-page__stats">
-          <h3>Statistics</h3>
+          <h3>Статистика</h3>
           <div className="profile-page__stats-grid">
             <div className="profile-page__stat">
               <span className="profile-page__stat-number">12</span>
-              <span className="profile-page__stat-label">Matches</span>
+              <span className="profile-page__stat-label">Совпадения</span>
             </div>
             <div className="profile-page__stat">
               <span className="profile-page__stat-number">8</span>
-              <span className="profile-page__stat-label">Messages</span>
+              <span className="profile-page__stat-label">Сообщения</span>
             </div>
             <div className="profile-page__stat">
               <span className="profile-page__stat-number">95%</span>
-              <span className="profile-page__stat-label">Profile Complete</span>
+              <span className="profile-page__stat-label">Профиль заполнен</span>
             </div>
           </div>
         </div>
@@ -154,14 +154,14 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
               className="profile-page__save"
               onClick={handleSave}
             >
-              💾 Save Changes
+              💾 Сохранить
             </button>
           ) : (
             <button 
               className="profile-page__edit"
               onClick={() => setIsEditing(true)}
             >
-              ✏️ Edit Profile
+              ✏️ Редактировать
             </button>
           )}
           
@@ -169,7 +169,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
             className="profile-page__logout"
             onClick={onLogout}
           >
-            🚪 Logout
+            🚪 Выйти
           </button>
         </div>
       </div>

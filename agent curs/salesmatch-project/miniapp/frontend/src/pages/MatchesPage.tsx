@@ -47,12 +47,12 @@ export const MatchesPage: React.FC = () => {
     <div className="matches-page">
       <div className="matches-page__header">
         <AnimatedText 
-          text="🤝 Your Matches" 
+          text="🤝 Ваши совпадения" 
           variant="slideUp"
           className="animated-text--gradient"
         />
         <AnimatedText 
-          text="People who liked you back" 
+          text="Люди, которым вы тоже понравились" 
           variant="fadeIn"
           delay={0.3}
         />
@@ -89,7 +89,7 @@ export const MatchesPage: React.FC = () => {
               />
               <div className="matches-page__score">
                 <AnimatedText 
-                  text="Match Score:"
+                  text="Совпадение:"
                   variant="fadeIn"
                   delay={index * 0.1 + 0.5}
                   className="matches-page__score-label"
@@ -123,8 +123,8 @@ export const MatchesPage: React.FC = () => {
 
       {matches.length === 0 && (
         <div className="matches-page__empty">
-          <h3>No matches yet</h3>
-          <p>Keep swiping to find your perfect match!</p>
+          <h3>Совпадений пока нет</h3>
+          <p>Продолжайте свайпать, чтобы найти идеальное совпадение!</p>
         </div>
       )}
     </div>

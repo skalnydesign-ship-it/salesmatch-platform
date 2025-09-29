@@ -53,3 +53,4 @@ export const AnimatedCard: React.FC<AnimatedCardProps> = ({
     </motion.div>
   );
 };
+
