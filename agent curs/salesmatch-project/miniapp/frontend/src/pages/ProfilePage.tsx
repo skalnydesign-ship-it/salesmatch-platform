@@ -35,6 +35,10 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
   // Photos gallery state (up to 5)
   const [photos, setPhotos] = useState<string[]>([]);
   const [avatarIndex, setAvatarIndex] = useState<number | null>(null);
+  // Documents (legal/identity/company registration)
+  type DocumentItem = { url: string; name: string; mime: string };
+  const [documents, setDocuments] = useState<DocumentItem[]>([]);
+  const [primaryDocIndex, setPrimaryDocIndex] = useState<number | null>(null);
 
   useEffect(() => {
     // Use Context7 to analyze profile
@@ -109,6 +113,40 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
   const handleSetAvatar = (index: number) => {
     setAvatarIndex(index);
   };
+
+  const getDocEmoji = (mime: string, name: string) => {
+    const lower = (mime || '').toLowerCase();
+    const ext = name.toLowerCase();
+    if (lower.includes('pdf') || ext.endsWith('.pdf')) return '🧾';
+    if (lower.startsWith('image/') || /\.(png|jpg|jpeg|gif|webp|heic|heif)$/i.test(ext)) return '🖼️';
+    if (ext.endsWith('.doc') || ext.endsWith('.docx')) return '📄';
+    return '📎';
+  };
+
+  const handleDocsUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    const newDocs: DocumentItem[] = Array.from(files).map((file) => ({
+      url: URL.createObjectURL(file),
+      name: file.name,
+      mime: file.type || 'application/octet-stream'
+    }));
+    const updated = [...documents, ...newDocs];
+    setDocuments(updated);
+    if (updated.length > 0 && primaryDocIndex === null) setPrimaryDocIndex(0);
+    e.target.value = '';
+  };
+
+  const handleRemoveDoc = (index: number) => {
+    const updated = documents.filter((_, i) => i !== index);
+    setDocuments(updated);
+    if (primaryDocIndex !== null) {
+      if (index === primaryDocIndex) setPrimaryDocIndex(updated.length ? 0 : null);
+      else if (index < primaryDocIndex) setPrimaryDocIndex(primaryDocIndex - 1);
+    }
+  };
+
+  const handleSetPrimaryDoc = (index: number) => setPrimaryDocIndex(index);
 
   return (
     <div className="profile-page">
@@ -349,6 +387,47 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
             ))}
             {photos.length === 0 && (
               <p className="profile-page__gallery-empty">Фотографии не добавлены</p>
+            )}
+          </div>
+        </div>
+
+        <div className="profile-page__section">
+          <h3>Документы</h3>
+          <div className="profile-page__field">
+            <label>Загрузите юридические документы (PDF, изображения, DOC/DOCX)</label>
+            <input 
+              type="file" 
+              accept=".pdf,image/*,.doc,.docx"
+              multiple 
+              onChange={handleDocsUpload}
+              className="profile-page__file-input"
+            />
+          </div>
+          <div className="profile-page__docs">
+            {documents.map((doc, index) => (
+              <div key={index} className="profile-page__doc">
+                <div className="profile-page__doc-left">
+                  <span className="profile-page__doc-icon">{getDocEmoji(doc.mime, doc.name)}</span>
+                  <a href={doc.url} target="_blank" rel="noreferrer" className="profile-page__doc-name">{doc.name}</a>
+                </div>
+                <div className="profile-page__doc-actions">
+                  <button 
+                    className={`profile-page__doc-primary ${primaryDocIndex === index ? 'is-active' : ''}`}
+                    onClick={() => handleSetPrimaryDoc(index)}
+                  >
+                    {primaryDocIndex === index ? 'Основной' : 'Сделать основным'}
+                  </button>
+                  <button 
+                    className="profile-page__doc-remove"
+                    onClick={() => handleRemoveDoc(index)}
+                  >
+                    Удалить
+                  </button>
+                </div>
+              </div>
+            ))}
+            {documents.length === 0 && (
+              <p className="profile-page__gallery-empty">Документы не загружены</p>
             )}
           </div>
         </div>
