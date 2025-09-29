@@ -87,22 +87,20 @@
 }
 
 .matching-page__actions {
-  display: flex;
-  gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
   justify-content: center;
+  align-items: stretch;
   margin-bottom: 2rem;
 }
 
-.matching-page__contact {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1rem;
-}
+/* merged contact button into actions grid */
 
 .matching-page__pass,
-.matching-page__like {
-  flex: 1;
-  max-width: 150px;
+.matching-page__like,
+.matching-page__write {
+  width: 100%;
 }
 
 .matching-page__loading {

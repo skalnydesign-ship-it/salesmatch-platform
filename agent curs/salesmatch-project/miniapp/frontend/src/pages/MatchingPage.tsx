@@ -278,13 +278,11 @@ export const MatchingPage: React.FC = () => {
         >
           🤝 Нравится
         </AnimatedButton>
-      </div>
-
-      <div className="matching-page__contact">
         <AnimatedButton
           variant="primary"
-          size="md"
+          size="lg"
           onClick={() => window.dispatchEvent(new CustomEvent('goToMessages'))}
+          className="matching-page__write"
         >
           ✉️ Написать
         </AnimatedButton>
