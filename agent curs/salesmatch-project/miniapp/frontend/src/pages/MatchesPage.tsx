@@ -5,26 +5,16 @@ import { AnimatedText } from '../components/animations/AnimatedText';
 import './MatchesPage.css';
 
 const mockMatches = [
-  {
-    id: 1,
-    name: 'John Smith',
-    title: 'Senior Sales Manager',
-    company: 'TechCorp Inc.',
-    image: '👨‍💼',
-    matchScore: 95,
-    lastMessage: 'Hi! Interested in discussing partnership opportunities?',
-    timestamp: '2 hours ago'
-  },
-  {
-    id: 2,
-    name: 'Sarah Johnson',
-    title: 'Business Development Director',
-    company: 'InnovateLab',
-    image: '👩‍💼',
-    matchScore: 88,
-    lastMessage: 'Let\'s schedule a call this week',
-    timestamp: '1 day ago'
-  }
+  { id: 1, name: 'Алексей Петров', title: 'Руководитель отдела продаж', company: 'ТехКорп', image: '👨‍💼', matchScore: 95, lastMessage: 'Готов обсудить партнёрство', timestamp: '2 часа назад' },
+  { id: 2, name: 'Софья Иванова', title: 'Директор по развитию бизнеса', company: 'ИнновейтЛаб', image: '👩‍💼', matchScore: 88, lastMessage: 'Давайте назначим звонок', timestamp: '1 день назад' },
+  { id: 3, name: 'Михаил Чэнь', title: 'Вице‑президент по продажам', company: 'ДатаФлоу Системс', image: '👨‍💻', matchScore: 90, lastMessage: 'Интересна интеграция', timestamp: '3 часа назад' },
+  { id: 4, name: 'Ольга Кузнецова', title: 'Аккаунт‑менеджер', company: 'РитейлПро', image: '👩‍💼', matchScore: 82, lastMessage: 'Направлю КП', timestamp: 'вчера' },
+  { id: 5, name: 'Илья Соколов', title: 'Head of Sales (EMEA)', company: 'CloudWare', image: '🧑‍💼', matchScore: 87, lastMessage: 'Ищу интеграторов', timestamp: '5 часов назад' },
+  { id: 6, name: 'Анна Морозова', title: 'BD Manager', company: 'HealthTech Group', image: '👩‍⚕️', matchScore: 80, lastMessage: 'Готовы к пилоту', timestamp: 'сегодня' },
+  { id: 7, name: 'Дмитрий Ефимов', title: 'Key Account Manager', company: 'FinSoft', image: '🕴️', matchScore: 84, lastMessage: 'Уточню детали', timestamp: '3 дня назад' },
+  { id: 8, name: 'Екатерина Орлова', title: 'Partnerships Lead', company: 'EduNext', image: '👩‍🏫', matchScore: 83, lastMessage: 'Интересны B2B клиенты', timestamp: '1 час назад' },
+  { id: 9, name: 'Роман Беляев', title: 'Sales Engineer', company: 'NetSecure', image: '👨‍🔧', matchScore: 79, lastMessage: 'Готов к демо', timestamp: '2 дня назад' },
+  { id: 10, name: 'Наталья Фролова', title: 'Региональный менеджер', company: 'AgroTech', image: '👩‍🌾', matchScore: 85, lastMessage: 'Есть вопросы по дистрибуции', timestamp: 'только что' }
 ];
 
 export const MatchesPage: React.FC = () => {
