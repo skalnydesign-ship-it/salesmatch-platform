@@ -19,6 +19,10 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
   const [isEditing, setIsEditing] = useState(false);
   const { getCodeSuggestions, getBestPractices, checkSecurity, getDocumentation } = useContext7();
 
+  // Photos gallery state (up to 5)
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [avatarIndex, setAvatarIndex] = useState<number | null>(null);
+
   useEffect(() => {
     // Use Context7 to analyze profile
     const analyzeProfile = async () => {
@@ -50,10 +54,49 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
     }));
   };
 
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    const remainingSlots = 5 - photos.length;
+    const filesToAdd = Array.from(files).slice(0, remainingSlots);
+    const newUrls = filesToAdd.map((file) => URL.createObjectURL(file));
+    const updated = [...photos, ...newUrls].slice(0, 5);
+    setPhotos(updated);
+    if (updated.length > 0 && avatarIndex === null) {
+      setAvatarIndex(0);
+    }
+    // reset input value to allow uploading same file again if needed
+    e.target.value = '';
+  };
+
+  const handleRemovePhoto = (index: number) => {
+    const updated = photos.filter((_, i) => i !== index);
+    setPhotos(updated);
+    if (avatarIndex !== null) {
+      if (index === avatarIndex) {
+        // if removed avatar -> set to first or null
+        setAvatarIndex(updated.length ? 0 : null);
+      } else if (index < avatarIndex) {
+        // shift avatar index left
+        setAvatarIndex(avatarIndex - 1);
+      }
+    }
+  };
+
+  const handleSetAvatar = (index: number) => {
+    setAvatarIndex(index);
+  };
+
   return (
     <div className="profile-page">
       <div className="profile-page__header">
-        <div className="profile-page__avatar">👤</div>
+        <div className="profile-page__avatar">
+          {photos.length > 0 && avatarIndex !== null ? (
+            <img src={photos[avatarIndex]} alt="Аватар" className="profile-page__avatar-img" />
+          ) : (
+            <span>👤</span>
+          )}
+        </div>
         <h2>{profile.name}</h2>
         <p>{profile.title} в {profile.company}</p>
       </div>
@@ -127,6 +170,44 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
           <div className="profile-page__field">
             <label>Телефон</label>
             <p>{profile.phone}</p>
+          </div>
+        </div>
+
+        <div className="profile-page__section">
+          <h3>Фотографии</h3>
+          <div className="profile-page__field">
+            <label>Добавьте до 5 фотографий</label>
+            <input 
+              type="file" 
+              accept="image/*" 
+              multiple 
+              onChange={handlePhotoUpload}
+              className="profile-page__file-input"
+            />
+          </div>
+          <div className="profile-page__gallery">
+            {photos.map((src, index) => (
+              <div key={index} className="profile-page__thumb">
+                <img src={src} alt={`Фото ${index + 1}`} />
+                <div className="profile-page__thumb-actions">
+                  <button 
+                    className={`profile-page__thumb-set ${avatarIndex === index ? 'is-active' : ''}`}
+                    onClick={() => handleSetAvatar(index)}
+                  >
+                    {avatarIndex === index ? 'Аватар' : 'Сделать аватаром'}
+                  </button>
+                  <button 
+                    className="profile-page__thumb-remove"
+                    onClick={() => handleRemovePhoto(index)}
+                  >
+                    Удалить
+                  </button>
+                </div>
+              </div>
+            ))}
+            {photos.length === 0 && (
+              <p className="profile-page__gallery-empty">Фотографии не добавлены</p>
+            )}
           </div>
         </div>
 
