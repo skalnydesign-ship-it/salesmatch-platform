@@ -35,8 +35,10 @@
 }
 
 .matching-page__question-actions {
-  display: inline-flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
+  width: 100%;
 }
 
 .matching-page__question-btn {
@@ -46,6 +48,8 @@
   background: #fff;
   color: #333;
   cursor: pointer;
+  width: 100%;
+  text-align: center;
 }
 
 .matching-page__question-btn.is-active {
