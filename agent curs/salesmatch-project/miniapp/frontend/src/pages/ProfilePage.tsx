@@ -14,7 +14,19 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
     bio: 'Experienced sales professional looking for new opportunities.',
     email: 'test@demo.com',
     phone: '+1 (555) 123-4567',
-    accountType: 'company' as 'company' | 'agent'
+    accountType: 'company' as 'company' | 'agent',
+    socials: {
+      website: '',
+      telegram: '',
+      instagram: '',
+      facebook: '',
+      linkedin: '',
+      twitter: '',
+      youtube: '',
+      tiktok: '',
+      github: '',
+      vk: ''
+    }
   });
   
   const [isEditing, setIsEditing] = useState(false);
@@ -52,6 +64,16 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
     setProfile(prev => ({
       ...prev,
       [field]: value
+    }));
+  };
+
+  const handleSocialChange = (field: keyof typeof profile.socials, value: string) => {
+    setProfile(prev => ({
+      ...prev,
+      socials: {
+        ...prev.socials,
+        [field]: value
+      }
     }));
   };
 
@@ -197,6 +219,99 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
           <div className="profile-page__field">
             <label>Телефон</label>
             <p>{profile.phone}</p>
+          </div>
+          <div className="profile-page__field">
+            <label>Ссылки</label>
+            {isEditing ? (
+              <div className="profile-page__socials-edit">
+                <div className="profile-page__socials-row">
+                  <input className="profile-page__input" placeholder="🌐 Веб-сайт" value={profile.socials.website} onChange={(e) => handleSocialChange('website', e.target.value)} />
+                  <input className="profile-page__input" placeholder="✈️ Telegram" value={profile.socials.telegram} onChange={(e) => handleSocialChange('telegram', e.target.value)} />
+                </div>
+                <div className="profile-page__socials-row">
+                  <input className="profile-page__input" placeholder="📸 Instagram" value={profile.socials.instagram} onChange={(e) => handleSocialChange('instagram', e.target.value)} />
+                  <input className="profile-page__input" placeholder="📘 Facebook" value={profile.socials.facebook} onChange={(e) => handleSocialChange('facebook', e.target.value)} />
+                </div>
+                <div className="profile-page__socials-row">
+                  <input className="profile-page__input" placeholder="🔗 LinkedIn" value={profile.socials.linkedin} onChange={(e) => handleSocialChange('linkedin', e.target.value)} />
+                  <input className="profile-page__input" placeholder="🐦 Twitter/X" value={profile.socials.twitter} onChange={(e) => handleSocialChange('twitter', e.target.value)} />
+                </div>
+                <div className="profile-page__socials-row">
+                  <input className="profile-page__input" placeholder="▶️ YouTube" value={profile.socials.youtube} onChange={(e) => handleSocialChange('youtube', e.target.value)} />
+                  <input className="profile-page__input" placeholder="🎵 TikTok" value={profile.socials.tiktok} onChange={(e) => handleSocialChange('tiktok', e.target.value)} />
+                </div>
+                <div className="profile-page__socials-row">
+                  <input className="profile-page__input" placeholder="🐙 GitHub" value={profile.socials.github} onChange={(e) => handleSocialChange('github', e.target.value)} />
+                  <input className="profile-page__input" placeholder="🖖 VK" value={profile.socials.vk} onChange={(e) => handleSocialChange('vk', e.target.value)} />
+                </div>
+              </div>
+            ) : (
+              <div className="profile-page__socials">
+                {profile.socials.website && (
+                  <a className="profile-page__social" href={profile.socials.website} target="_blank" rel="noreferrer">
+                    <span className="profile-page__social-icon">🌐</span>
+                    <span>Веб-сайт</span>
+                  </a>
+                )}
+                {profile.socials.telegram && (
+                  <a className="profile-page__social" href={profile.socials.telegram} target="_blank" rel="noreferrer">
+                    <span className="profile-page__social-icon">✈️</span>
+                    <span>Telegram</span>
+                  </a>
+                )}
+                {profile.socials.instagram && (
+                  <a className="profile-page__social" href={profile.socials.instagram} target="_blank" rel="noreferrer">
+                    <span className="profile-page__social-icon">📸</span>
+                    <span>Instagram</span>
+                  </a>
+                )}
+                {profile.socials.facebook && (
+                  <a className="profile-page__social" href={profile.socials.facebook} target="_blank" rel="noreferrer">
+                    <span className="profile-page__social-icon">📘</span>
+                    <span>Facebook</span>
+                  </a>
+                )}
+                {profile.socials.linkedin && (
+                  <a className="profile-page__social" href={profile.socials.linkedin} target="_blank" rel="noreferrer">
+                    <span className="profile-page__social-icon">🔗</span>
+                    <span>LinkedIn</span>
+                  </a>
+                )}
+                {profile.socials.twitter && (
+                  <a className="profile-page__social" href={profile.socials.twitter} target="_blank" rel="noreferrer">
+                    <span className="profile-page__social-icon">🐦</span>
+                    <span>Twitter</span>
+                  </a>
+                )}
+                {profile.socials.youtube && (
+                  <a className="profile-page__social" href={profile.socials.youtube} target="_blank" rel="noreferrer">
+                    <span className="profile-page__social-icon">▶️</span>
+                    <span>YouTube</span>
+                  </a>
+                )}
+                {profile.socials.tiktok && (
+                  <a className="profile-page__social" href={profile.socials.tiktok} target="_blank" rel="noreferrer">
+                    <span className="profile-page__social-icon">🎵</span>
+                    <span>TikTok</span>
+                  </a>
+                )}
+                {profile.socials.github && (
+                  <a className="profile-page__social" href={profile.socials.github} target="_blank" rel="noreferrer">
+                    <span className="profile-page__social-icon">🐙</span>
+                    <span>GitHub</span>
+                  </a>
+                )}
+                {profile.socials.vk && (
+                  <a className="profile-page__social" href={profile.socials.vk} target="_blank" rel="noreferrer">
+                    <span className="profile-page__social-icon">🖖</span>
+                    <span>VK</span>
+                  </a>
+                )}
+                {!profile.socials.website && !profile.socials.telegram && !profile.socials.instagram && !profile.socials.facebook && !profile.socials.linkedin && !profile.socials.twitter && !profile.socials.youtube && !profile.socials.tiktok && !profile.socials.github && !profile.socials.vk && (
+                  <p className="profile-page__gallery-empty">Ссылки не добавлены</p>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

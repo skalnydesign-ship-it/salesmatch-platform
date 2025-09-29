@@ -141,6 +141,45 @@
   font-size: 0.9rem;
 }
 
+.profile-page__socials-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-page__socials-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.profile-page__socials {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.profile-page__social {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f9f9f9;
+  color: #333;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-page__social:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.profile-page__social-icon {
+  font-size: 1.2rem;
+}
+
 .profile-page__field p {
   color: #333;
   margin: 0;
