@@ -3,6 +3,7 @@ import { Context7Provider } from './contexts/Context7Provider';
 import { Header } from './components/Header';
 import { BottomNavigation } from './components/BottomNavigation';
 import { MatchingPage } from './pages/MatchingPage';
+import { SearchPage } from './pages/SearchPage';
 import { MatchesPage } from './pages/MatchesPage';
 import { MessagesPage } from './pages/MessagesPage';
 import { ProfilePage } from './pages/ProfilePage';
@@ -10,12 +11,18 @@ import { AuthPage } from './pages/AuthPage';
 import './App.css';
 
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState('matching');
+  const [currentPage, setCurrentPage] = useState('search');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const handleAuth = () => {
     setIsAuthenticated(true);
   };
+
+  React.useEffect(() => {
+    const goToMatching = () => setCurrentPage('matching');
+    window.addEventListener('goToMatching', goToMatching as any);
+    return () => window.removeEventListener('goToMatching', goToMatching as any);
+  }, []);
 
   const handleLogout = () => {
     setIsAuthenticated(false);
@@ -25,6 +32,8 @@ const App: React.FC = () => {
     switch (currentPage) {
       case 'auth':
         return <AuthPage onAuth={handleAuth} />;
+      case 'search':
+        return <SearchPage />;
       case 'matching':
         return <MatchingPage />;
       case 'matches':

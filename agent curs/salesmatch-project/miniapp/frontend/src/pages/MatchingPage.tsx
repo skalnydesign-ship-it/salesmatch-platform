@@ -150,7 +150,13 @@ export const MatchingPage: React.FC = () => {
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [likedProfiles, setLikedProfiles] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [filterType, setFilterType] = useState<'all' | AccountType>('all');
+  const [filterType, setFilterType] = useState<'all' | AccountType>(() => {
+    try {
+      return (localStorage.getItem('matchingFilter') as any) || 'all';
+    } catch {
+      return 'all';
+    }
+  });
   const { getCodeSuggestions, analyzeCode } = useContext7();
 
   const filteredProfiles = filterType === 'all' 
@@ -219,29 +225,7 @@ export const MatchingPage: React.FC = () => {
 
   return (
     <div className="matching-page">
-      <div className="matching-page__question">
-        <span className="matching-page__question-label">Кого ищем?</span>
-        <div className="matching-page__question-actions">
-          <button 
-            className={`matching-page__question-btn ${filterType === 'agent' ? 'is-active' : ''}`}
-            onClick={() => { setFilterType('agent'); setCurrentProfileIndex(0); }}
-          >
-            🧑‍💼 Агенты
-          </button>
-          <button 
-            className={`matching-page__question-btn ${filterType === 'company' ? 'is-active' : ''}`}
-            onClick={() => { setFilterType('company'); setCurrentProfileIndex(0); }}
-          >
-            🏢 Компании
-          </button>
-          <button 
-            className={`matching-page__question-btn ${filterType === 'all' ? 'is-active' : ''}`}
-            onClick={() => { setFilterType('all'); setCurrentProfileIndex(0); }}
-          >
-            🔎 Все
-          </button>
-        </div>
-      </div>
+      {/* Question moved to SearchPage */}
       <AnimatedCard 
         className="matching-page__card"
         delay={0.2}
