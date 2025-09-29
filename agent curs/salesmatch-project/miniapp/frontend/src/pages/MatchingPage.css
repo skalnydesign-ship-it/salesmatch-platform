@@ -52,6 +52,10 @@
   text-align: center;
 }
 
+.matching-page__question-actions--vertical {
+  grid-template-columns: 1fr;
+}
+
 .matching-page__question-btn.is-active {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff;

@@ -1,5 +1,6 @@
 import React from 'react';
 import './MatchingPage.css';
+import { AnimatedButton } from '../components/animations/AnimatedButton';
 
 export const SearchPage: React.FC = () => {
   const selectFilter = (value: 'all' | 'company' | 'agent') => {
@@ -13,25 +14,31 @@ export const SearchPage: React.FC = () => {
     <div className="matching-page">
       <div className="matching-page__question">
         <span className="matching-page__question-label">Кого ищем?</span>
-        <div className="matching-page__question-actions">
-          <button 
-            className="matching-page__question-btn"
+        <div className="matching-page__question-actions matching-page__question-actions--vertical">
+          <AnimatedButton
+            variant="primary"
+            size="md"
+            className="matching-page__write"
             onClick={() => selectFilter('agent')}
           >
             🧑‍💼 Агенты
-          </button>
-          <button 
-            className="matching-page__question-btn"
+          </AnimatedButton>
+          <AnimatedButton
+            variant="success"
+            size="md"
+            className="matching-page__like"
             onClick={() => selectFilter('company')}
           >
             🏢 Компании
-          </button>
-          <button 
-            className="matching-page__question-btn"
+          </AnimatedButton>
+          <AnimatedButton
+            variant="danger"
+            size="md"
+            className="matching-page__pass"
             onClick={() => selectFilter('all')}
           >
             🔎 Все
-          </button>
+          </AnimatedButton>
         </div>
       </div>
     </div>
