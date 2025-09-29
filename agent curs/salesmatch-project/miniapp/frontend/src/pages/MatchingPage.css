@@ -17,6 +17,25 @@
   text-align: center;
 }
 
+.matching-page__filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.matching-page__filter-label {
+  color: #666;
+}
+
+.matching-page__filter-select {
+  padding: 0.5rem 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 0.95rem;
+}
+
 .matching-page__image {
   font-size: 4rem;
   margin-bottom: 1rem;
