@@ -13,7 +13,6 @@ export const SearchPage: React.FC = () => {
   return (
     <div className="matching-page">
       <div className="matching-page__question">
-        <span className="matching-page__question-label">Кого ищем?</span>
         <div className="matching-page__question-actions matching-page__question-actions--vertical">
           <AnimatedButton
             variant="primary"
