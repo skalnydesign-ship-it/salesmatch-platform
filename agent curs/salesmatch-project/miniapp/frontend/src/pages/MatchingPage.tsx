@@ -219,18 +219,28 @@ export const MatchingPage: React.FC = () => {
 
   return (
     <div className="matching-page">
-      <div className="matching-page__filters">
-        <span className="matching-page__filter-icon">🔍</span>
-        <span className="matching-page__filter-label">Кого ищем</span>
-        <select 
-          className="matching-page__filter-select"
-          value={filterType}
-          onChange={(e) => { setFilterType(e.target.value as any); setCurrentProfileIndex(0); }}
-        >
-          <option value="all">Все</option>
-          <option value="company">Компании</option>
-          <option value="agent">Агенты</option>
-        </select>
+      <div className="matching-page__question">
+        <span className="matching-page__question-label">Кого ищем?</span>
+        <div className="matching-page__question-actions">
+          <button 
+            className={`matching-page__question-btn ${filterType === 'agent' ? 'is-active' : ''}`}
+            onClick={() => { setFilterType('agent'); setCurrentProfileIndex(0); }}
+          >
+            🧑‍💼 Агенты
+          </button>
+          <button 
+            className={`matching-page__question-btn ${filterType === 'company' ? 'is-active' : ''}`}
+            onClick={() => { setFilterType('company'); setCurrentProfileIndex(0); }}
+          >
+            🏢 Компании
+          </button>
+          <button 
+            className={`matching-page__question-btn ${filterType === 'all' ? 'is-active' : ''}`}
+            onClick={() => { setFilterType('all'); setCurrentProfileIndex(0); }}
+          >
+            🔎 Все
+          </button>
+        </div>
       </div>
       <AnimatedCard 
         className="matching-page__card"
