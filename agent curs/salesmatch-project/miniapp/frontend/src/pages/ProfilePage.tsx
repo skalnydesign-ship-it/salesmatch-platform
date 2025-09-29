@@ -133,6 +133,21 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
         <div className="profile-page__section">
           <h3>Личные данные</h3>
           <div className="profile-page__field">
+            <label>Тип профиля</label>
+            {isEditing ? (
+              <select
+                value={profile.accountType}
+                onChange={(e) => handleInputChange('accountType', e.target.value)}
+                className="profile-page__input"
+              >
+                <option value="company">Компания</option>
+                <option value="agent">Агент</option>
+              </select>
+            ) : (
+              <p>{profile.accountType === 'company' ? 'Компания' : 'Агент'}</p>
+            )}
+          </div>
+          <div className="profile-page__field">
             <label>Имя</label>
             {isEditing ? (
               <input
@@ -160,21 +175,6 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
             )}
           </div>
 
-          <div className="profile-page__field">
-            <label>Тип профиля</label>
-            {isEditing ? (
-              <select
-                value={profile.accountType}
-                onChange={(e) => handleInputChange('accountType', e.target.value)}
-                className="profile-page__input"
-              >
-                <option value="company">Компания</option>
-                <option value="agent">Агент</option>
-              </select>
-            ) : (
-              <p>{profile.accountType === 'company' ? 'Компания' : 'Агент'}</p>
-            )}
-          </div>
 
           <div className="profile-page__field">
             <label>Компания</label>
