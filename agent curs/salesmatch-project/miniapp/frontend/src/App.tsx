@@ -20,8 +20,13 @@ const App: React.FC = () => {
 
   React.useEffect(() => {
     const goToMatching = () => setCurrentPage('matching');
+    const goToMessages = () => setCurrentPage('messages');
     window.addEventListener('goToMatching', goToMatching as any);
-    return () => window.removeEventListener('goToMatching', goToMatching as any);
+    window.addEventListener('goToMessages', goToMessages as any);
+    return () => {
+      window.removeEventListener('goToMatching', goToMatching as any);
+      window.removeEventListener('goToMessages', goToMessages as any);
+    };
   }, []);
 
   const handleLogout = () => {

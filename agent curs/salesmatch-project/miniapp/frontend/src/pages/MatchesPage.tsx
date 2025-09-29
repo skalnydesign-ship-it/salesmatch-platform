@@ -104,8 +104,8 @@ export const MatchesPage: React.FC = () => {
                 className="matches-page__timestamp"
               />
             </div>
-            <button className="matches-page__chat">
-              💬
+            <button className="matches-page__chat" onClick={() => window.dispatchEvent(new CustomEvent('goToMessages'))}>
+              ✉️ Написать
             </button>
           </AnimatedCard>
         ))}

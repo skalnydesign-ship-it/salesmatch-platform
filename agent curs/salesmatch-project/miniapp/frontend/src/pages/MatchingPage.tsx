@@ -280,6 +280,16 @@ export const MatchingPage: React.FC = () => {
         </AnimatedButton>
       </div>
 
+      <div className="matching-page__contact">
+        <AnimatedButton
+          variant="primary"
+          size="md"
+          onClick={() => window.dispatchEvent(new CustomEvent('goToMessages'))}
+        >
+          ✉️ Написать
+        </AnimatedButton>
+      </div>
+
       <div className="matching-page__stats">
         <AnimatedText 
           text={`Понравилось: ${likedProfiles.length}`}
