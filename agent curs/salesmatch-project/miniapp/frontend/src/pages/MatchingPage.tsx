@@ -220,7 +220,8 @@ export const MatchingPage: React.FC = () => {
   return (
     <div className="matching-page">
       <div className="matching-page__filters">
-        <label className="matching-page__filter-label">Кого ищем:</label>
+        <span className="matching-page__filter-icon">🔍</span>
+        <span className="matching-page__filter-label">Кого ищем</span>
         <select 
           className="matching-page__filter-select"
           value={filterType}

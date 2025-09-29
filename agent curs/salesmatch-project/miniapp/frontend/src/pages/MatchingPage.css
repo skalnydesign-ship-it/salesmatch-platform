@@ -22,16 +22,26 @@
   align-items: center;
   gap: 10px;
   margin-bottom: 1rem;
+  padding: 0.6rem 0.8rem;
+  border: 2px solid #eaeaea;
+  border-radius: 12px;
+  background: #fafafa;
+}
+
+.matching-page__filter-icon {
+  opacity: 0.4;
 }
 
 .matching-page__filter-label {
-  color: #666;
+  color: #9aa0a6;
+  font-size: 0.95rem;
 }
 
 .matching-page__filter-select {
-  padding: 0.5rem 0.75rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 10px;
+  margin-left: auto;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
   background: #fff;
   font-size: 0.95rem;
 }
