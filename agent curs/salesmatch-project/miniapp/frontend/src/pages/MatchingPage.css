@@ -103,6 +103,19 @@
   width: 100%;
 }
 
+/* Responsive layout for action buttons */
+@media (max-width: 420px) {
+  .matching-page__actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 421px) and (max-width: 640px) {
+  .matching-page__actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 .matching-page__loading {
   display: flex;
   flex-direction: column;
