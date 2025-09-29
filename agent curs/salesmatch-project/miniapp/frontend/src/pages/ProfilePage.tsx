@@ -13,7 +13,8 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
     company: 'Demo Corp',
     bio: 'Experienced sales professional looking for new opportunities.',
     email: 'test@demo.com',
-    phone: '+1 (555) 123-4567'
+    phone: '+1 (555) 123-4567',
+    accountType: 'company' as 'company' | 'agent'
   });
   
   const [isEditing, setIsEditing] = useState(false);
@@ -98,7 +99,12 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
           )}
         </div>
         <h2>{profile.name}</h2>
-        <p>{profile.title} в {profile.company}</p>
+        <p>
+          {profile.title}
+          {profile.accountType === 'company' && profile.company
+            ? ` в ${profile.company}`
+            : ' (Агент)'}
+        </p>
       </div>
 
       <div className="profile-page__content">
@@ -133,16 +139,37 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
           </div>
 
           <div className="profile-page__field">
+            <label>Тип профиля</label>
+            {isEditing ? (
+              <select
+                value={profile.accountType}
+                onChange={(e) => handleInputChange('accountType', e.target.value)}
+                className="profile-page__input"
+              >
+                <option value="company">Компания</option>
+                <option value="agent">Агент</option>
+              </select>
+            ) : (
+              <p>{profile.accountType === 'company' ? 'Компания' : 'Агент'}</p>
+            )}
+          </div>
+
+          <div className="profile-page__field">
             <label>Компания</label>
             {isEditing ? (
-              <input
-                type="text"
-                value={profile.company}
-                onChange={(e) => handleInputChange('company', e.target.value)}
-                className="profile-page__input"
-              />
+              profile.accountType === 'company' ? (
+                <input
+                  type="text"
+                  value={profile.company}
+                  onChange={(e) => handleInputChange('company', e.target.value)}
+                  className="profile-page__input"
+                  placeholder="Название компании"
+                />
+              ) : (
+                <p>-</p>
+              )
             ) : (
-              <p>{profile.company}</p>
+              <p>{profile.accountType === 'company' && profile.company ? profile.company : 'Агент'}</p>
             )}
           </div>
 
